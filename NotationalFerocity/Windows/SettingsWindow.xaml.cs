@@ -37,23 +37,30 @@ namespace NotationalFerocity.Windows
 
         private void okButton_Click(object sender, RoutedEventArgs e)
         {
+            // TODO: Implement Settings save logic
 
+            Close();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             notesDirectoryTextBox.Text = Properties.Settings.Default.NotesDirectory;
-            extensionsTextBox.Text = String.Join("; ", Properties.Settings.Default.Extensions);
+
+            var extensions = new string[Properties.Settings.Default.Extensions.Count];
+
+            Properties.Settings.Default.Extensions.CopyTo(extensions, 0);
+
+            extensionsTextBox.Text = String.Join("; ", extensions);
         }
 
         private void notesDirectoryTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
-
+            // TODO: Implement validation
         }
 
         private void extensionsTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
-
+            // TODO: Implement validation
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="NotationalAudacity.Properties" GeneratedClassName="Settings">
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="NotationalFerocity.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
     <Setting Name="Extensions" Type="System.Collections.Specialized.StringCollection" Scope="User">
@@ -11,6 +11,24 @@
     </Setting>
     <Setting Name="NotesDirectory" Type="System.String" Scope="User">
       <Value Profile="(Default)">C:\Notes</Value>
+    </Setting>
+    <Setting Name="BackgroundColor" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">White</Value>
+    </Setting>
+    <Setting Name="ForegroundColor" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">Black</Value>
+    </Setting>
+    <Setting Name="NoteFontProportional" Type="System.Drawing.Font" Scope="User">
+      <Value Profile="(Default)">Segoe UI, 8.25pt</Value>
+    </Setting>
+    <Setting Name="NoteFontFixedWidth" Type="System.Drawing.Font" Scope="User">
+      <Value Profile="(Default)">Consolas, 8.25pt</Value>
+    </Setting>
+    <Setting Name="DisplayFont" Type="System.Drawing.Font" Scope="User">
+      <Value Profile="(Default)">Segoe UI, 8.25pt</Value>
+    </Setting>
+    <Setting Name="MarkdownFont" Type="System.Drawing.Font" Scope="User">
+      <Value Profile="(Default)">Microsoft Sans Serif, 8.25pt</Value>
     </Setting>
   </Settings>
 </SettingsFile>

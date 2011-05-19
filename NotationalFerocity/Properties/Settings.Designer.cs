@@ -48,5 +48,77 @@ namespace NotationalFerocity.Properties {
                 this["NotesDirectory"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("White")]
+        public global::System.Drawing.Color BackgroundColor {
+            get {
+                return ((global::System.Drawing.Color)(this["BackgroundColor"]));
+            }
+            set {
+                this["BackgroundColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Black")]
+        public global::System.Drawing.Color ForegroundColor {
+            get {
+                return ((global::System.Drawing.Color)(this["ForegroundColor"]));
+            }
+            set {
+                this["ForegroundColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Segoe UI, 8.25pt")]
+        public global::System.Drawing.Font NoteFontProportional {
+            get {
+                return ((global::System.Drawing.Font)(this["NoteFontProportional"]));
+            }
+            set {
+                this["NoteFontProportional"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Consolas, 8.25pt")]
+        public global::System.Drawing.Font NoteFontFixedWidth {
+            get {
+                return ((global::System.Drawing.Font)(this["NoteFontFixedWidth"]));
+            }
+            set {
+                this["NoteFontFixedWidth"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Segoe UI, 8.25pt")]
+        public global::System.Drawing.Font DisplayFont {
+            get {
+                return ((global::System.Drawing.Font)(this["DisplayFont"]));
+            }
+            set {
+                this["DisplayFont"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Microsoft Sans Serif, 8.25pt")]
+        public global::System.Drawing.Font MarkdownFont {
+            get {
+                return ((global::System.Drawing.Font)(this["MarkdownFont"]));
+            }
+            set {
+                this["MarkdownFont"] = value;
+            }
+        }
     }
 }

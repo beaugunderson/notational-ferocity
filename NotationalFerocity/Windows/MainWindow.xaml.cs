@@ -31,20 +31,44 @@ namespace NotationalFerocity.Windows
 
         protected bool LoadingText { get; set; }
 
-        public Note CurrentNote { 
+        private const Int32 _SettingsMenuId = 1000;
+        private const Int32 _AboutMenuId = 1001;
+
+        public override bool HandleWndProc(IntPtr wParam)
+        {
+            // Execute the appropriate code for the System Menu item that was clicked
+            switch (wParam.ToInt32())
+            {
+                case _SettingsMenuId:
+                    var settings = new SettingsWindow();
+
+                    settings.ShowDialog();
+
+                    return true;
+                case _AboutMenuId:
+                    MessageBox.Show("A work in progress.");
+
+                    return true;
+            }
+
+            return false;
+        }
+
+        public Note CurrentNote
+        {
             get
             {
                 return _currentNote;
             }
-            
-            private set
+
+            set
             {
                 _currentNote = value;
 
                 notesListBox.SelectedItem = _currentNote;
             }
         }
-        
+
         public MainWindow()
         {
             InitializeComponent();
@@ -114,7 +138,7 @@ namespace NotationalFerocity.Windows
 
             InvokeIfNeeded(RefreshNotes);
         }
-        
+
         void NoteWatcher_Modified(object sender, FileSystemEventArgs e)
         {
             Console.WriteLine("File {1}: {0}", e.Name, e.ChangeType.ToString().ToLower());
@@ -124,22 +148,18 @@ namespace NotationalFerocity.Windows
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            InvokeIfNeeded(RefreshNotes);
+            // Create our new System Menu items just before the Close menu item
+            InsertMenu(SystemMenuHandle, 5, MF_BYPOSITION | MF_SEPARATOR, 0, string.Empty);
+
+            InsertMenu(SystemMenuHandle, 6, MF_BYPOSITION, _SettingsMenuId, "Settings...");
+            InsertMenu(SystemMenuHandle, 7, MF_BYPOSITION, _AboutMenuId, "About...");
+
+            RefreshNotes();
         }
 
         private ListCollectionView GetView()
         {
             return (ListCollectionView)CollectionViewSource.GetDefaultView(Notes);
-        }
-
-        private void RefreshNotes()
-        {
-            Notes.Clear();
-
-            foreach (var note in GetNotes())
-            {
-                Notes.Add(new Note(note));
-            }
         }
 
         private IEnumerable<FileSystemInfo> GetNotes()
@@ -159,23 +179,57 @@ namespace NotationalFerocity.Windows
 
                 var files = path.GetFileSystemInfos();
 
-                foreach (var file in files)
+                foreach (var file in files
+                    .Where(file => !file.Attributes.HasFlag(FileAttributes.Directory))
+                    .Where(file => Extensions.Contains(file.Extension.ToLower())))
                 {
-                    if (file.Attributes.HasFlag(FileAttributes.Directory))
-                    {
-                        continue;
-                    }
-
-                    if (!Extensions.Contains(file.Extension.ToLower()))
-                    {
-                        continue;
-                    }
-
                     Console.WriteLine(file.FullName);
 
                     yield return file;
                 }
             }
+        }
+
+        private void RefreshNotes()
+        {
+            Notes.Clear();
+
+            foreach (var note in GetNotes())
+            {
+                Notes.Add(new Note(note));
+            }
+        }
+
+        private void AddNote(Note note)
+        {
+            Notes.Add(note);
+
+            CurrentNote = note;
+
+            noteRichTextBox.Focus();
+        }
+
+        private void UpdateText()
+        {
+            LoadingText = true;
+
+            noteRichTextBox.Document.Blocks.Clear();
+
+            var paragraph = new Paragraph();
+
+            paragraph.Inlines.Add(new Run(File.ReadAllText(CurrentNote.FileSystemInfo.FullName)));
+
+            noteRichTextBox.Document.Blocks.Add(paragraph);
+
+            LoadingText = false;
+        }
+
+        /// <summary>
+        /// Filter based on whether the note contains the text in searchTextBox.Text
+        /// </summary>
+        private bool SearchFilter(object o)
+        {
+            return o as Note != null && (o as Note).ToString().ToLower().Contains(searchTextBox.Text.ToLower());
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -193,29 +247,6 @@ namespace NotationalFerocity.Windows
             CurrentNote = (Note)e.AddedItems[0];
 
             UpdateText();
-        }
-
-        private void UpdateText()
-        {
-            LoadingText = true;
-
-            noteRichTextBox.Document.Blocks.Clear();
-
-            var paragraph = new Paragraph();
-            
-            paragraph.Inlines.Add(new Run(File.ReadAllText(CurrentNote.FileSystemInfo.FullName)));
-
-            noteRichTextBox.Document.Blocks.Add(paragraph);
-
-            LoadingText = false;
-        }
-
-        /// <summary>
-        /// Filter based on whether the note contains the text in searchTextBox.Text
-        /// </summary>
-        private bool SearchFilter(object o)
-        {
-            return o as Note != null && (o as Note).ToString().ToLower().Contains(searchTextBox.Text.ToLower());
         }
 
         /// <summary>
@@ -296,11 +327,7 @@ namespace NotationalFerocity.Windows
                 return;
             }
 
-            var newNote = Note.FromTitle(searchTextBox.Text);
-
-            Notes.Add(newNote);
-
-            CurrentNote = newNote;
+            AddNote(Note.FromTitle(searchTextBox.Text));
         }
     }
 }
