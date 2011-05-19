@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Forms;
-using Microsoft.Win32;
 
-namespace NotationalFerocity
+namespace NotationalFerocity.Windows
 {
     /// <summary>
     /// Interaction logic for SettingsWindow.xaml

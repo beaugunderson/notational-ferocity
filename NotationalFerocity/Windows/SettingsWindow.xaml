@@ -1,4 +1,4 @@
-﻿<Window x:Class="NotationalFerocity.SettingsWindow"
+﻿<Window x:Class="NotationalFerocity.Windows.SettingsWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Settings" Height="385" Width="435" Loaded="Window_Loaded">

@@ -90,7 +90,7 @@ namespace NotationalFerocity.WPF
             }
             else
             {
-                // If not is editable mode, no need to show elements.
+                // If we're not in editable mode there's no need to show elements
                 _textBox.Arrange(new Rect(0, 0, 0, 0));
             }
 
@@ -109,7 +109,7 @@ namespace NotationalFerocity.WPF
         }
 
         /// <summary>
-        /// override function to return infomation about visual tree.
+        /// Override function to return infomation about visual tree.
         /// </summary>
         protected override Visual GetVisualChild(int index)
         {

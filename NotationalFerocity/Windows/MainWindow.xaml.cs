@@ -9,26 +9,49 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+
 using NotationalFerocity.Models;
 using NotationalFerocity.Properties;
+using NotationalFerocity.Utilities;
 
-namespace NotationalFerocity
+namespace NotationalFerocity.Windows
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow
     {
+        private DeferredAction _deferredAction;
+        private readonly TimeSpan _saveDelay = TimeSpan.FromMilliseconds(500);
+        private Note _currentNote;
+
         public ObservableCollection<Note> Notes { get; private set; }
         public StringCollection Extensions { get; private set; }
-        public Note CurrentNote { get; private set; }
         public FileSystemWatcher NoteWatcher { get; private set; }
 
+        protected bool LoadingText { get; set; }
+
+        public Note CurrentNote { 
+            get
+            {
+                return _currentNote;
+            }
+            
+            private set
+            {
+                _currentNote = value;
+
+                notesListBox.SelectedItem = _currentNote;
+            }
+        }
+        
         public MainWindow()
         {
             InitializeComponent();
 
             Notes = new ObservableCollection<Note>();
+
+            GetView().CustomSort = new AlphanumComparator();
 
             try
             {
@@ -36,10 +59,12 @@ namespace NotationalFerocity
 
                 if (!Directory.Exists(Settings.Default.NotesDirectory))
                 {
-                    // Show Settings
                     var result = MessageBox.Show(
-                        "The directory you've specified for your notes database doesn't exist. Would you like to create it?\n\n" +
-                        Settings.Default.NotesDirectory, "Notes directory not found", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                        string.Format("The directory you've specified for your notes database doesn't exist. Would you like to create it?\n\n{0}",
+                            Settings.Default.NotesDirectory),
+                        "Notes directory not found",
+                        MessageBoxButton.YesNo,
+                        MessageBoxImage.Question);
 
                     if (result == MessageBoxResult.Yes)
                     {
@@ -64,10 +89,9 @@ namespace NotationalFerocity
 
             NoteWatcher.Created += NoteWatcher_Modified;
             NoteWatcher.Deleted += NoteWatcher_Modified;
-            NoteWatcher.Changed += NoteWatcher_Modified;
 
             NoteWatcher.IncludeSubdirectories = true;
-            NoteWatcher.EnableRaisingEvents = true;
+            NoteWatcher.EnableRaisingEvents = false;
 
             DataContext = this;
         }
@@ -100,8 +124,6 @@ namespace NotationalFerocity
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            GetView().CustomSort = new AlphanumComparator();
-
             InvokeIfNeeded(RefreshNotes);
         }
 
@@ -188,19 +210,19 @@ namespace NotationalFerocity
             LoadingText = false;
         }
 
-        protected bool LoadingText
-        {
-            get;
-            set;
-        }
-
+        /// <summary>
+        /// Filter based on whether the note contains the text in searchTextBox.Text
+        /// </summary>
         private bool SearchFilter(object o)
         {
-            var note = o as Note;
-
-            return note != null && note.ToString().ToLower().Contains(searchTextBox.Text.ToLower());
+            return o as Note != null && (o as Note).ToString().ToLower().Contains(searchTextBox.Text.ToLower());
         }
 
+        /// <summary>
+        /// Applies a filter to the list of notes each time the user types
+        /// into the search field. If there's only one item returned we
+        /// select it and display the text.
+        /// </summary>
         private void searchTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(searchTextBox.Text))
@@ -212,12 +234,6 @@ namespace NotationalFerocity
                 GetView().Filter = SearchFilter;
             }
 
-            //Console.WriteLine("{0} - {1} - {2} - {3}", 
-            //    notesListBox.Items.Count,
-            //    GetView().Cast<Note>().Count(),
-            //    GetView().Count,
-            //    Notes.Count);
-
             if (notesListBox.Items.Count == 1)
             {
                 CurrentNote = GetView().GetItemAt(0) as Note;
@@ -226,12 +242,19 @@ namespace NotationalFerocity
             }
         }
 
+        /// <summary>
+        /// A convenience function to get the contents of the RichTextBox
+        /// </summary>
+        /// <returns>The contents of the RichTextBox</returns>
         private string GetText()
         {
             return new TextRange(noteRichTextBox.Document.ContentStart,
                                  noteRichTextBox.Document.ContentEnd).Text;
         }
 
+        /// <summary>
+        /// Only save once the user has stopped typing.
+        /// </summary>
         private void noteRichTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (LoadingText)
@@ -239,12 +262,45 @@ namespace NotationalFerocity
                 return;
             }
 
+            if (_deferredAction == null)
+            {
+                _deferredAction = DeferredAction.Create(SaveText);
+            }
+
+            _deferredAction.Defer(_saveDelay);
+        }
+
+        /// <summary>
+        /// Save the contents of the RichTextBox to the note file.
+        /// </summary>
+        private void SaveText()
+        {
             File.WriteAllText(CurrentNote.FileSystemInfo.FullName, GetText());
         }
 
-        private void notesListBox_SourceUpdated(object sender, DataTransferEventArgs e)
+        /// <summary>
+        /// Focus an existing note or create a new note when the user hits enter.
+        /// </summary>
+        private void searchTextBox_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            Console.WriteLine("Source updated.");
+            if (e.Key != System.Windows.Input.Key.Enter)
+            {
+                return;
+            }
+
+            foreach (var note in Notes.Where(
+                note => note.FileNameWithoutExtension.ToLower() == searchTextBox.Text.ToLower()))
+            {
+                CurrentNote = note;
+
+                return;
+            }
+
+            var newNote = Note.FromTitle(searchTextBox.Text);
+
+            Notes.Add(newNote);
+
+            CurrentNote = newNote;
         }
     }
 }

@@ -1,6 +1,9 @@
 ﻿using System;
 using System.IO;
+using System.Web;
 using System.Windows;
+
+using NotationalFerocity.Properties;
 
 namespace NotationalFerocity.Models
 {
@@ -15,40 +18,47 @@ namespace NotationalFerocity.Models
 
         public string Tags { get; set; }
 
-        public DependencyProperty FileNameProperty =
-            DependencyProperty.Register("FileName",
-            typeof (string),
-            typeof (Note),
-            new PropertyMetadata(default(string), FileNameChangedCallback));
-
-        private static void FileNameChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            Console.WriteLine("{0} {1}", e.OldValue, e.NewValue);
-
-            var note = d as Note;
-
-            if (note != null)
-            {
-                File.Move(note.FileSystemInfo.FullName, e.NewValue + note.FileSystemInfo.Extension);
-            }
-        }
-
-        public string FileName
+        public string FileNameWithoutExtension
         {
             get
             {
-                return (string)GetValue(FileNameProperty);
+                return HttpUtility.UrlDecode(Path.GetFileNameWithoutExtension(FileSystemInfo.FullName));
             }
 
             set
             {
-                SetValue(FileNameProperty, value);
+                var directory = Path.GetDirectoryName(HttpUtility.UrlEncode(FileNameWithoutExtension));
+
+                if (directory == null)
+                {
+                    throw new ApplicationException(string.Format("Unable to ascertain the directory for note {0}", this));
+                }
+
+                var destination = Path.Combine(directory, HttpUtility.UrlEncode(value + FileSystemInfo.Extension));
+
+                Console.WriteLine("Name changed, renaming file from {0} to {1}",
+                    FileNameWithoutExtension, destination);
+
+                File.Move(FileSystemInfo.FullName, destination);
+
+                FileSystemInfo = new FileInfo(destination);
             }
         }
 
         public override string ToString()
         {
-            return Path.GetFileNameWithoutExtension(FileSystemInfo.Name) ?? "";
+            return FileNameWithoutExtension;
+        }
+
+        public static Note FromTitle(string title)
+        {
+            var destination = Path.Combine(Settings.Default.NotesDirectory, HttpUtility.UrlEncode(title + ".txt"));
+
+            var file = File.CreateText(destination);
+
+            file.Close();
+
+            return new Note(new FileInfo(destination));
         }
     }
 }

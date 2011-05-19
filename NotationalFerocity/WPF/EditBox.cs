@@ -63,7 +63,7 @@ namespace NotationalFerocity.WPF
             _textBox = new TextBox();
             _adorner = new EditBoxAdorner(textBlock, _textBox);
             
-            AdornerLayer layer = AdornerLayer.GetAdornerLayer(textBlock);
+            var layer = AdornerLayer.GetAdornerLayer(textBlock);
             
             layer.Add(_adorner);
 
@@ -218,18 +218,18 @@ namespace NotationalFerocity.WPF
         }
 
         /// <summary>
-        /// When an EditBox is in editing mode, pressing the ENTER or F2
+        /// When an EditBox is in editing mode, pressing the Enter or F2
         /// keys switches the EditBox to normal mode.
         /// </summary>
         private void OnTextBoxKeyDown(object sender, KeyEventArgs e)
         {
-            if (!IsEditing || (e.Key != Key.Enter && e.Key != Key.F2))
+            if (IsEditing && (e.Key == Key.Enter || e.Key == Key.F2))
             {
-                return;
-            }
+                Console.WriteLine("Hit Enter or F2.");
 
-            IsEditing = false;
-            _canBeEdit = false;
+                IsEditing = false;
+                _canBeEdit = false;
+            }
         }
 
         /// <summary>
@@ -240,6 +240,13 @@ namespace NotationalFerocity.WPF
         {
             var newFocusedElement = e.NewFocus as ContextMenu;
 
+            Console.WriteLine("New focused element: " + newFocusedElement);
+
+            Console.WriteLine("    " + e.Source);
+            Console.WriteLine("    " + e.OriginalSource);
+            Console.WriteLine("    " + e.OldFocus);
+            Console.WriteLine("    " + e.NewFocus);
+
             if (IsEditing && newFocusedElement != null &&
                 newFocusedElement.PlacementTarget == _textBox)
             {
@@ -247,6 +254,8 @@ namespace NotationalFerocity.WPF
             }
             else
             {
+                Console.WriteLine("Lost focus.");
+
                 IsEditing = false;
             }
         }
@@ -257,6 +266,8 @@ namespace NotationalFerocity.WPF
         /// </summary>
         private void OnCouldSwitchToNormalMode(object sender, RoutedEventArgs e)
         {
+            Console.WriteLine("Could switch to normal mode: {0}", e.Source);
+            
             IsEditing = false;
         }
 
@@ -268,7 +279,11 @@ namespace NotationalFerocity.WPF
         {
             _itemsControl = GetDependencyObjectFromVisualTree(this,
                                                               typeof (ItemsControl)) as ItemsControl;
-            if (_itemsControl == null) return;
+            
+            if (_itemsControl == null)
+            {
+                return;
+            }
 
             // Handle the Resize/ScrollChange/MouseWheel 
             // events to determine whether to switch to Normal mode
@@ -277,8 +292,8 @@ namespace NotationalFerocity.WPF
             _itemsControl.AddHandler(ScrollViewer.ScrollChangedEvent,
                                      new RoutedEventHandler(OnScrollViewerChanged));
 
-            _itemsControl.AddHandler(MouseWheelEvent,
-                                     new RoutedEventHandler(OnCouldSwitchToNormalMode), true);
+            //_itemsControl.AddHandler(MouseWheelEvent,
+            //                         new RoutedEventHandler(OnCouldSwitchToNormalMode), true);
         }
 
         /// <summary>
@@ -290,6 +305,8 @@ namespace NotationalFerocity.WPF
             if (IsEditing && Mouse.PrimaryDevice.LeftButton ==
                 MouseButtonState.Pressed)
             {
+                Console.WriteLine("Scroll viewer changed.");
+
                 IsEditing = false;
             }
         }
@@ -302,8 +319,8 @@ namespace NotationalFerocity.WPF
             GetDependencyObjectFromVisualTree(DependencyObject startObject,
                                               Type type)
         {
-            //Walk the visual tree to get the parent(ItemsControl) 
-            //of this control
+            // Walk the visual tree to get the parent(ItemsControl) 
+            // of this control
             var parent = startObject;
 
             while (parent != null)
@@ -329,7 +346,7 @@ namespace NotationalFerocity.WPF
 
             if (parent != null)
             {
-                parent.SizeChanged += OnCouldSwitchToNormalMode;
+                // parent.SizeChanged += OnCouldSwitchToNormalMode;
             }
         }
     }
