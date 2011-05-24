@@ -1214,7 +1214,9 @@ namespace FontDialog
             {
                 // Initialize the font family list.
                 InitializeFontFamilyList();
+
                 _familyListValid = true;
+                
                 OnSelectedFontFamilyChanged(SelectedFontFamily);
 
                 // Defer any other initialization until later.
@@ -1224,10 +1226,12 @@ namespace FontDialog
             {
                 // Initialize the typeface list.
                 InitializeTypefaceList();
+                
                 _typefaceListValid = true;
 
                 // Select the current typeface in the list.
                 InitializeTypefaceListSelection();
+                
                 _typefaceListSelectionValid = true;
 
                 // Defer any other initialization until later.
@@ -1237,6 +1241,7 @@ namespace FontDialog
             {
                 // Select the current typeface in the list.
                 InitializeTypefaceListSelection();
+                
                 _typefaceListSelectionValid = true;
 
                 // Defer any other initialization until later.
@@ -1253,6 +1258,7 @@ namespace FontDialog
                     tab.InitializeTab();
                     tab.IsValid = true;
                 }
+                
                 if (!_previewValid)
                 {
                     // Initialize the preview control.

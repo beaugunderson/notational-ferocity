@@ -49,36 +49,47 @@ namespace NotationalFerocity.Properties {
             }
         }
         
+        /// <summary>
+        /// The background color.
+        /// </summary>
         [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsDescriptionAttribute("The background color.")]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("White")]
-        public global::System.Drawing.Color BackgroundColor {
+        [global::System.Configuration.DefaultSettingValueAttribute("#FFFFFFFF")]
+        public global::System.Windows.Media.Color ColorBackground {
             get {
-                return ((global::System.Drawing.Color)(this["BackgroundColor"]));
+                return ((global::System.Windows.Media.Color)(this["ColorBackground"]));
             }
             set {
-                this["BackgroundColor"] = value;
+                this["ColorBackground"] = value;
             }
         }
         
+        /// <summary>
+        /// The foreground color.
+        /// </summary>
         [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsDescriptionAttribute("The foreground color.")]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Black")]
-        public global::System.Drawing.Color ForegroundColor {
+        [global::System.Configuration.DefaultSettingValueAttribute("#FF000000")]
+        public global::System.Windows.Media.Color ColorForeground {
             get {
-                return ((global::System.Drawing.Color)(this["ForegroundColor"]));
+                return ((global::System.Windows.Media.Color)(this["ColorForeground"]));
             }
             set {
-                this["ForegroundColor"] = value;
+                this["ColorForeground"] = value;
             }
         }
         
+        /// <summary>
+        /// The font used to display notes viewed with a proportional font.
+        /// </summary>
         [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsDescriptionAttribute("The font used to display notes viewed with a proportional font.")]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Segoe UI, 8.25pt")]
-        public global::System.Drawing.Font NoteFontProportional {
+        public global::NotationalFerocity.WPF.FontDefinition NoteFontProportional {
             get {
-                return ((global::System.Drawing.Font)(this["NoteFontProportional"]));
+                return ((global::NotationalFerocity.WPF.FontDefinition)(this["NoteFontProportional"]));
             }
             set {
                 this["NoteFontProportional"] = value;
@@ -87,37 +98,36 @@ namespace NotationalFerocity.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Consolas, 8.25pt")]
-        public global::System.Drawing.Font NoteFontFixedWidth {
+        public global::NotationalFerocity.WPF.FontDefinition NoteFontMonospaced {
             get {
-                return ((global::System.Drawing.Font)(this["NoteFontFixedWidth"]));
+                return ((global::NotationalFerocity.WPF.FontDefinition)(this["NoteFontMonospaced"]));
             }
             set {
-                this["NoteFontFixedWidth"] = value;
+                this["NoteFontMonospaced"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Segoe UI, 8.25pt")]
-        public global::System.Drawing.Font DisplayFont {
+        [global::System.Configuration.DefaultSettingValueAttribute("Segoe UI, 12pt")]
+        public global::System.Drawing.Font FontDisplay {
             get {
-                return ((global::System.Drawing.Font)(this["DisplayFont"]));
+                return ((global::System.Drawing.Font)(this["FontDisplay"]));
             }
             set {
-                this["DisplayFont"] = value;
+                this["FontDisplay"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Microsoft Sans Serif, 8.25pt")]
-        public global::System.Drawing.Font MarkdownFont {
+        [global::System.Configuration.DefaultSettingValueAttribute("Segoe UI, 12pt")]
+        public global::System.Drawing.Font FontMarkdown {
             get {
-                return ((global::System.Drawing.Font)(this["MarkdownFont"]));
+                return ((global::System.Drawing.Font)(this["FontMarkdown"]));
             }
             set {
-                this["MarkdownFont"] = value;
+                this["FontMarkdown"] = value;
             }
         }
     }

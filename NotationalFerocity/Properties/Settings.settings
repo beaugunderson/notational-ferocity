@@ -12,23 +12,23 @@
     <Setting Name="NotesDirectory" Type="System.String" Scope="User">
       <Value Profile="(Default)">C:\Notes</Value>
     </Setting>
-    <Setting Name="BackgroundColor" Type="System.Drawing.Color" Scope="User">
-      <Value Profile="(Default)">White</Value>
+    <Setting Name="ColorBackground" Description="The background color." Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FFFFFFFF</Value>
     </Setting>
-    <Setting Name="ForegroundColor" Type="System.Drawing.Color" Scope="User">
-      <Value Profile="(Default)">Black</Value>
+    <Setting Name="ColorForeground" Description="The foreground color." Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FF000000</Value>
     </Setting>
-    <Setting Name="NoteFontProportional" Type="System.Drawing.Font" Scope="User">
-      <Value Profile="(Default)">Segoe UI, 8.25pt</Value>
+    <Setting Name="NoteFontProportional" Description="The font used to display notes viewed with a proportional font." Type="NotationalFerocity.WPF.FontDefinition" Scope="User">
+      <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="NoteFontFixedWidth" Type="System.Drawing.Font" Scope="User">
-      <Value Profile="(Default)">Consolas, 8.25pt</Value>
+    <Setting Name="NoteFontMonospaced" Type="NotationalFerocity.WPF.FontDefinition" Scope="User">
+      <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="DisplayFont" Type="System.Drawing.Font" Scope="User">
-      <Value Profile="(Default)">Segoe UI, 8.25pt</Value>
+    <Setting Name="FontDisplay" Type="System.Drawing.Font" Scope="User">
+      <Value Profile="(Default)">Segoe UI, 12pt</Value>
     </Setting>
-    <Setting Name="MarkdownFont" Type="System.Drawing.Font" Scope="User">
-      <Value Profile="(Default)">Microsoft Sans Serif, 8.25pt</Value>
+    <Setting Name="FontMarkdown" Type="System.Drawing.Font" Scope="User">
+      <Value Profile="(Default)">Segoe UI, 12pt</Value>
     </Setting>
   </Settings>
 </SettingsFile>

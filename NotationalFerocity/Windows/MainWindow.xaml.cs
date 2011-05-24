@@ -34,7 +34,7 @@ namespace NotationalFerocity.Windows
         private const Int32 _SettingsMenuId = 1000;
         private const Int32 _AboutMenuId = 1001;
 
-        public override bool HandleWndProc(IntPtr wParam)
+        internal override bool HandleWndProc(IntPtr wParam)
         {
             // Execute the appropriate code for the System Menu item that was clicked
             switch (wParam.ToInt32())
