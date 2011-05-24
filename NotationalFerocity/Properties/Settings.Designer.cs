@@ -87,9 +87,9 @@ namespace NotationalFerocity.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Configuration.SettingsDescriptionAttribute("The font used to display notes viewed with a proportional font.")]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        public global::NotationalFerocity.WPF.FontDefinition NoteFontProportional {
+        public global::NotationalFerocity.WPF.SettingsFontDefinition NoteFontProportional {
             get {
-                return ((global::NotationalFerocity.WPF.FontDefinition)(this["NoteFontProportional"]));
+                return ((global::NotationalFerocity.WPF.SettingsFontDefinition)(this["NoteFontProportional"]));
             }
             set {
                 this["NoteFontProportional"] = value;
@@ -98,9 +98,9 @@ namespace NotationalFerocity.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        public global::NotationalFerocity.WPF.FontDefinition NoteFontMonospaced {
+        public global::NotationalFerocity.WPF.SettingsFontDefinition NoteFontMonospaced {
             get {
-                return ((global::NotationalFerocity.WPF.FontDefinition)(this["NoteFontMonospaced"]));
+                return ((global::NotationalFerocity.WPF.SettingsFontDefinition)(this["NoteFontMonospaced"]));
             }
             set {
                 this["NoteFontMonospaced"] = value;

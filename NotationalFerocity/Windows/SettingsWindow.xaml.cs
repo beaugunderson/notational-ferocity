@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Specialized;
+using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
+using System.Windows.Media;
 using NotationalFerocity.WPF;
 
 using Forms = System.Windows.Forms;
@@ -48,16 +50,19 @@ namespace NotationalFerocity.Windows
 
         private void okButton_Click(object sender, RoutedEventArgs e)
         {
-            Settings.Default.NoteFontMonospaced = FontDefinition.FromDependencyObject(monospacedFontTextBox);
-            Settings.Default.NoteFontProportional = FontDefinition.FromDependencyObject(proportionalFontTextBox);
+            Settings.Default.NoteFontMonospaced = SettingsFontDefinition.FromFontDefinition(FontDefinition.FromDependencyObject(monospacedFontTextBox));
+            Settings.Default.NoteFontProportional = SettingsFontDefinition.FromFontDefinition(FontDefinition.FromDependencyObject(proportionalFontTextBox));
 
             Settings.Default.NotesDirectory = notesDirectoryTextBox.Text.Trim();
 
             var extensions = new StringCollection();
 
-            foreach (var extension in Regex.Split(extensionsTextBox.Text.Trim(), @"[\s,;]"))
+            foreach (var extension in Regex.Split(extensionsTextBox.Text.Trim(), @"[\s,;]+"))
             {
-                extensions.Add(extension);
+                if (!String.IsNullOrWhiteSpace(extension))
+                {
+                    extensions.Add(extension.Trim());
+                }
             }
 
             Settings.Default.Extensions = extensions;
@@ -83,10 +88,10 @@ namespace NotationalFerocity.Windows
             extensionsTextBox.Text = String.Join("; ", extensions);
         
             // Load monospaced font
-            //monospacedFontTextBox.Text = SetFontProperties(monospacedFontTextBox, Settings.Default.NoteFontMonospaced);
+            monospacedFontTextBox.Text = SetFontProperties(monospacedFontTextBox, Settings.Default.NoteFontMonospaced);
 
             // Load proprtional font
-            //proportionalFontTextBox.Text = SetFontProperties(proportionalFontTextBox, Settings.Default.NoteFontProportional);
+            proportionalFontTextBox.Text = SetFontProperties(proportionalFontTextBox, Settings.Default.NoteFontProportional);
         
             // Load background color
             backgroundColorPicker.SelectedColor = Settings.Default.ColorBackground;
@@ -95,27 +100,59 @@ namespace NotationalFerocity.Windows
             foregroundColorPicker.SelectedColor = Settings.Default.ColorForeground;
         }
 
-        //private string SetFontProperties(DependencyObject control, FontDefinition fontDefinition)
-        //{            
-            //control.FontFamily = new System.Windows.Media.FontFamily(font.FontFamily.Name);
-            //control.FontSize = font.Size;
+        private string SetFontProperties(DependencyObject control, SettingsFontDefinition settingsFontDefinition)
+        {
+            var fontDefinition = settingsFontDefinition.ToFontDefinition();
+            
+            fontDefinition.ApplyToDependencyObject(control);
 
-            //fontDefinition.ApplyToDependencyObject(control);
-
-            //return string.Format("{0}, {1}pt", font.FontFamily.Name, font.SizeInPoints);
-        //}
+            return string.Format("{0}, {1}pt", fontDefinition.FontFamily, fontDefinition.FontSize);
+        }
 
         private void notesDirectoryTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            // TODO: Implement validation
+            ValidateNotesDirectoryTextBox();
         }
 
         private void extensionsTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            // TODO: Implement validation
+            ValidateExtensionsTextBox();
         }
 
-        private void proprtionalFontButton_Click(object sender, RoutedEventArgs e)
+        private void ValidateExtensionsTextBox()
+        {
+            bool error = false;
+
+            if (String.IsNullOrWhiteSpace(extensionsTextBox.Text))
+            {
+                error = true;
+            }
+
+            DisplayErrorStatus(extensionsTextBox, error);
+        }
+
+        private void ValidateNotesDirectoryTextBox()
+        {
+            DisplayErrorStatus(notesDirectoryTextBox, !Directory.Exists(notesDirectoryTextBox.Text));
+        }
+
+        private void DisplayErrorStatus(TextBox textBox, bool errorStatus)
+        {
+            if (errorStatus)
+            {
+                var errorColor = Colors.OrangeRed;
+
+                errorColor.A = 128;
+
+                textBox.Background = new SolidColorBrush(errorColor);
+            }
+            else
+            {
+                textBox.ClearValue(BackgroundProperty);
+            }
+        }
+
+        private void proportionalFontButton_Click(object sender, RoutedEventArgs e)
         {
             ShowFontDialog(proportionalFontTextBox);
         }
@@ -136,11 +173,18 @@ namespace NotationalFerocity.Windows
             fontChooser.SetPropertiesFromObject(textBox);
 
             var result = fontChooser.ShowDialog();
-            
-            if (result != null && result.Value)
+
+            if (result == null || !result.Value)
             {
-                fontChooser.ApplyPropertiesToObject(textBox);
+                return;
             }
+
+            var fontDefinition = new FontDefinition();
+
+            fontChooser.ApplyPropertiesToObject(textBox);
+            fontChooser.ApplyPropertiesToObject(fontDefinition);
+
+            textBox.Text = fontDefinition.ToString();
         }
     }
 }

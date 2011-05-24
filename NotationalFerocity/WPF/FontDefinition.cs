@@ -1,13 +1,10 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 
 namespace NotationalFerocity.WPF
 {
-    [Serializable]
     public class FontDefinition : TextBlock
     {
-        [NonSerialized]
         internal static readonly DependencyProperty[] _properties = new[]
         {
             FontFamilyProperty,
@@ -17,24 +14,19 @@ namespace NotationalFerocity.WPF
             FontStretchProperty
         };
 
-        public object this[DependencyProperty index]
-        {
-            get
-            {
-                return GetValue(index);
-            }
-        }
-
         public override string ToString()
         {
-            return string.Format("{0}, {1}pt", FontFamily, FontSize);
+            return string.Format("{0}, {1}pt", GetValue(FontFamilyProperty), GetValue(FontSizeProperty));
         }
 
         public void ApplyToDependencyObject(DependencyObject control)
         {
             foreach (var property in _properties)
             {
-                control.SetValue(property, GetValue(property));
+                if (property != null)
+                {
+                    control.SetValue(property, GetValue(property));
+                }
             }
         }
 
@@ -44,7 +36,10 @@ namespace NotationalFerocity.WPF
 
             foreach (var property in _properties)
             {
-                fontDefinition.SetValue(property, control.GetValue(property));
+                if (property != null)
+                {
+                    fontDefinition.SetValue(property, control.GetValue(property));
+                }
             }
 
             return fontDefinition;

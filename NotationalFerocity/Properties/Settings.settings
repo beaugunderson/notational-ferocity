@@ -18,10 +18,10 @@
     <Setting Name="ColorForeground" Description="The foreground color." Type="System.Windows.Media.Color" Scope="User">
       <Value Profile="(Default)">#FF000000</Value>
     </Setting>
-    <Setting Name="NoteFontProportional" Description="The font used to display notes viewed with a proportional font." Type="NotationalFerocity.WPF.FontDefinition" Scope="User">
+    <Setting Name="NoteFontProportional" Description="The font used to display notes viewed with a proportional font." Type="NotationalFerocity.WPF.SettingsFontDefinition" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="NoteFontMonospaced" Type="NotationalFerocity.WPF.FontDefinition" Scope="User">
+    <Setting Name="NoteFontMonospaced" Type="NotationalFerocity.WPF.SettingsFontDefinition" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="FontDisplay" Type="System.Drawing.Font" Scope="User">
