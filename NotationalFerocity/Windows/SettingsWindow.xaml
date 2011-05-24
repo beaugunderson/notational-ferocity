@@ -22,7 +22,7 @@
         <Label Content="Proportional Font" Height="28" HorizontalAlignment="Left" Margin="12,148,0,0" Name="label3" VerticalAlignment="Top" Width="108" />
         <Label Content="Monospaced Font" Height="28" HorizontalAlignment="Left" Margin="12,182,0,0" Name="label4" VerticalAlignment="Top" Width="108" />
         <TextBox Height="23" Margin="0,184,41,0" Name="monospacedFontTextBox" VerticalAlignment="Top" Grid.Column="1" />
-        <Button Content="..." Height="23" HorizontalAlignment="Right" Margin="0,150,12,0" Name="proprtionalFontButton" VerticalAlignment="Top" Width="23" Grid.Column="1" Click="proprtionalFontButton_Click" />
+        <Button Content="..." Height="23" HorizontalAlignment="Right" Margin="0,150,12,0" Name="proprtionalFontButton" VerticalAlignment="Top" Width="23" Grid.Column="1" Click="proportionalFontButton_Click" />
         <Button Content="..." Height="23" HorizontalAlignment="Right" Margin="0,184,12,0" Name="monospaceFontButton" VerticalAlignment="Top" Width="23" Grid.Column="1" Click="monospaceFontButton_Click" />
     </Grid>
 </Window>
