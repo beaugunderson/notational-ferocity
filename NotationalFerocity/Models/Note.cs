@@ -2,13 +2,15 @@
 using System.IO;
 using System.Web;
 using System.Windows;
-
+using System.Windows.Documents;
 using NotationalFerocity.Properties;
 
 namespace NotationalFerocity.Models
 {
     public class Note : DependencyObject
     {
+        private string _text;
+
         public Note(FileSystemInfo fileSystemInfo)
         {
             FileSystemInfo = fileSystemInfo;
@@ -59,6 +61,33 @@ namespace NotationalFerocity.Models
             file.Close();
 
             return new Note(new FileInfo(destination));
+        }
+
+        public void Save()
+        {
+            File.WriteAllText(FileSystemInfo.FullName, Text);
+        }
+
+        public FlowDocument Document
+        {
+            get
+            {
+                return new FlowDocument(new Paragraph(new Run(Text)));
+            }
+        }
+
+        public string Text
+        {
+            // Lazy-load the contents of the file
+            get
+            {
+                return _text ?? (_text = File.ReadAllText(FileSystemInfo.FullName));
+            }
+
+            set
+            {
+                _text = value;
+            }
         }
     }
 }

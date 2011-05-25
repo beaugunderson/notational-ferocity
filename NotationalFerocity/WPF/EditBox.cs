@@ -27,7 +27,7 @@ namespace NotationalFerocity.WPF
         //Specifies whether an EditBox can switch to editing mode. 
         //Set to true if the ListViewItem that contains the EditBox is 
         //selected, when the mouse pointer moves over the EditBox
-        private bool _canBeEdit;
+        private bool _canBeEdited;
         
         //Specifies whether an EditBox can switch to editing mode.
         //Set to true when the ListViewItem that contains the EditBox is 
@@ -94,7 +94,7 @@ namespace NotationalFerocity.WPF
 
             if (!IsEditing && IsParentSelected)
             {
-                _canBeEdit = true;
+                _canBeEdited = true;
             }
         }
 
@@ -108,20 +108,22 @@ namespace NotationalFerocity.WPF
             base.OnMouseLeave(e);
             
             _isMouseWithinScope = false;
-            _canBeEdit = false;
+            _canBeEdited = false;
         }
 
         /// <summary>
         /// An EditBox switches to editing mode when the MouseUp event occurs
         /// for that EditBox and the following conditions are satisfied:
+        /// 
         /// 1. A MouseEnter event for the EditBox occurred before the 
         /// MouseUp event.
+        /// 
         /// 2. The mouse did not leave the EditBox between the
         /// MouseEnter and MouseUp events.
+        /// 
         /// 3. The ListViewItem that contains the EditBox was selected
         /// when the MouseEnter event occurred.
         /// </summary>
-        /// <param name="e"></param>
         protected override void OnMouseUp(MouseButtonEventArgs e)
         {
             base.OnMouseUp(e);
@@ -137,7 +139,7 @@ namespace NotationalFerocity.WPF
                 return;
             }
 
-            if (!e.Handled && (_canBeEdit || _isMouseWithinScope))
+            if (!e.Handled && (_canBeEdited || _isMouseWithinScope))
             {
                 IsEditing = true;
             }
@@ -223,12 +225,13 @@ namespace NotationalFerocity.WPF
         /// </summary>
         private void OnTextBoxKeyDown(object sender, KeyEventArgs e)
         {
-            if (IsEditing && (e.Key == Key.Enter || e.Key == Key.F2))
+            if (IsEditing &&
+                (e.Key == Key.Enter || e.Key == Key.Escape || e.Key == Key.F2))
             {
-                Console.WriteLine("Hit Enter or F2.");
+                Console.WriteLine("User hit Enter, Escape, or F2.");
 
                 IsEditing = false;
-                _canBeEdit = false;
+                _canBeEdited = false;
             }
         }
 
@@ -267,7 +270,7 @@ namespace NotationalFerocity.WPF
         private void HookItemsControlEvents()
         {
             _itemsControl = GetDependencyObjectFromVisualTree(this,
-                                                              typeof (ItemsControl)) as ItemsControl;
+                 typeof (ItemsControl)) as ItemsControl;
             
             if (_itemsControl == null)
             {
@@ -279,10 +282,10 @@ namespace NotationalFerocity.WPF
             _itemsControl.SizeChanged += OnCouldSwitchToNormalMode;
 
             _itemsControl.AddHandler(ScrollViewer.ScrollChangedEvent,
-                                     new RoutedEventHandler(OnScrollViewerChanged));
+                new RoutedEventHandler(OnScrollViewerChanged));
 
             //_itemsControl.AddHandler(MouseWheelEvent,
-            //                         new RoutedEventHandler(OnCouldSwitchToNormalMode), true);
+            //    new RoutedEventHandler(OnCouldSwitchToNormalMode), true);
         }
 
         /// <summary>
@@ -302,9 +305,7 @@ namespace NotationalFerocity.WPF
         /// Walk visual tree to find the first DependencyObject 
         /// of the specific type.
         /// </summary>
-        private DependencyObject
-            GetDependencyObjectFromVisualTree(DependencyObject startObject,
-                                              Type type)
+        private DependencyObject GetDependencyObjectFromVisualTree(DependencyObject startObject, Type type)
         {
             // Walk the visual tree to get the parent(ItemsControl) 
             // of this control

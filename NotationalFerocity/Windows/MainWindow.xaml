@@ -4,16 +4,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
         xmlns:l="clr-namespace:NotationalFerocity.WPF"
-        xmlns:Windows="clr-namespace:NotationalFerocity.Windows"
         xmlns:s="clr-namespace:NotationalFerocity.Properties"
-        Title="Notational Ferocity" Height="350" Width="525" WindowStyle="SingleBorderWindow" AllowDrop="True" Loaded="Window_Loaded"
-        mc:Ignorable="d" Closing="Window_Closing" d:DataContext="{d:DesignInstance Windows:MainWindow}">
-    <!--<Window.ContextMenu>
-        <ContextMenu>
-            <MenuItem Name="SettingsMenuItem" />
-        </ContextMenu>
-    </Window.ContextMenu>-->
-
+        xmlns:w="clr-namespace:NotationalFerocity.Windows"
+        Title="Notational Ferocity"
+        Height="350" Width="525"
+        AllowDrop="True"
+        Loaded="Window_Loaded"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance w:MainWindow}">
     <Window.Resources>
         <Style TargetType="{x:Type Paragraph}">
             <Setter Property="Margin" Value="0"/>
@@ -40,21 +38,52 @@
             <ColumnDefinition Width="350*" />
         </Grid.ColumnDefinitions>
 
-        <RichTextBox Grid.Column="2" Margin="0,12,12,12" Name="noteRichTextBox"
-            d:DataContext="{d:DesignInstance l:SettingsFontDefinition}"
-            TextChanged="noteRichTextBox_TextChanged" 
-            FontFamily="{Binding Path=FontFamily, UpdateSourceTrigger=PropertyChanged, Mode=OneWay, NotifyOnSourceUpdated=True}" 
-            SourceUpdated="noteRichTextBox_SourceUpdated"
-            FontSize="{Binding Path=FontSize}" 
-            FontStretch="{Binding Path=FontStretch}" 
-            FontWeight="{Binding Path=FontWeight}" 
-            FontStyle="{Binding Path=FontStyle}"
-            Foreground="{Binding Source={x:Static s:Settings.Default}, Path=ColorForeground}"
-            Background="{Binding Source={x:Static s:Settings.Default}, Path=ColorBackground}" />
+        <l:NoteRichTextBox Grid.Column="2" Margin="0,12,12,12" x:Name="noteRichTextBox"
+                TextChanged="noteRichTextBox_TextChanged" 
+                Foreground="{Binding Source={x:Static s:Settings.Default}, Path=ColorForeground}"
+                Background="{Binding Source={x:Static s:Settings.Default}, Path=ColorBackground}">
+            <l:NoteRichTextBox.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="_Markdown" Click="Markdown_Click" />
+                </ContextMenu>
+            </l:NoteRichTextBox.ContextMenu>
             
+            <l:NoteRichTextBox.Style>
+                <Style TargetType="{x:Type l:NoteRichTextBox}">
+                    <Setter Property="FontFamily" Value="{Binding Source={x:Static s:Settings.Default}, Path=FontProportional.FontFamily}" />
+                    <Setter Property="FontSize" Value="{Binding Source={x:Static s:Settings.Default}, Path=FontProportional.FontSize}" />
+                    <Setter Property="FontStretch" Value="{Binding Source={x:Static s:Settings.Default}, Path=FontProportional.FontStretch}" />
+                    <Setter Property="FontWeight" Value="{Binding Source={x:Static s:Settings.Default}, Path=FontProportional.FontWeight}" />
+                    <Setter Property="FontStyle" Value="{Binding Source={x:Static s:Settings.Default}, Path=FontProportional.FontStyle}" />
+
+                    <Setter Property="IsEnabled" Value="true" />
+                    
+                    <Style.Triggers>
+                        <Trigger Property="FontSelection" Value="Monospaced">
+                            <Setter Property="FontFamily" Value="{Binding Source={x:Static s:Settings.Default}, Path=FontMonospaced.FontFamily}" />
+                            <Setter Property="FontSize" Value="{Binding Source={x:Static s:Settings.Default}, Path=FontMonospaced.FontSize}" />
+                            <Setter Property="FontStretch" Value="{Binding Source={x:Static s:Settings.Default}, Path=FontMonospaced.FontStretch}" />
+                            <Setter Property="FontWeight" Value="{Binding Source={x:Static s:Settings.Default}, Path=FontMonospaced.FontWeight}" />
+                            <Setter Property="FontStyle" Value="{Binding Source={x:Static s:Settings.Default}, Path=FontMonospaced.FontStyle}" />
+                        </Trigger>
+                        
+                        <DataTrigger Binding="{Binding Path=CurrentNote}" Value="{x:Null}">
+                            <Setter Property="IsEnabled" Value="false" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </l:NoteRichTextBox.Style>
+        </l:NoteRichTextBox>
+
         <TextBox Height="23" Margin="12,12,0,0" Name="searchTextBox" VerticalAlignment="Top" TextChanged="searchTextBox_TextChanged" KeyDown="searchTextBox_KeyDown" />
 
-        <ListView Margin="12,41,0,12" Name="notesListBox" Background="#FFDDDDF3" ItemsSource="{Binding Path=Notes}" SelectionChanged="notesListBox_SelectionChanged">
+        <ListView Margin="12,41,0,12" Name="notesListView" Background="WhiteSmoke" ItemsSource="{Binding Path=Notes}" SelectionChanged="notesListBox_SelectionChanged" SelectedItem="{Binding Path=CurrentNote, Mode=TwoWay}">
+            <ListView.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="_Rename" Click="Rename_Click" />
+                </ContextMenu>
+            </ListView.ContextMenu>
+
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <l:EditBox Height="20" Value="{Binding Path=FileNameWithoutExtension, Mode=TwoWay}" Focusable="False" />

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Windows;
 using System.Windows.Media;
 using System.Xml.Serialization;
@@ -8,25 +7,10 @@ namespace NotationalFerocity.WPF
 {
     [Serializable]
     [XmlRoot(ElementName = "Font", IsNullable = false)]
-    public class SettingsFontDefinition : INotifyPropertyChanged
+    public class SettingsFontDefinition
     {
-        private string _fontFamily;
-
         [XmlAttribute]
-        public string FontFamily
-        {
-            get
-            {
-                return _fontFamily;
-            }
-
-            set
-            {
-                _fontFamily = value;
-
-                OnPropertyChanged("FontFamily");
-            }
-        }
+        public string FontFamily { get; set; }
 
         [XmlAttribute]
         public string FontStyle { get; set; }
@@ -39,16 +23,6 @@ namespace NotationalFerocity.WPF
 
         [XmlAttribute]
         public double FontSize { get; set; }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected void OnPropertyChanged(string name)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(name));
-            }
-        }
 
         public FontDefinition ToFontDefinition()
         {

@@ -8,11 +8,11 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 
 using NotationalFerocity.Models;
 using NotationalFerocity.Properties;
 using NotationalFerocity.Utilities;
+using NotationalFerocity.WPF;
 
 namespace NotationalFerocity.Windows
 {
@@ -23,21 +23,21 @@ namespace NotationalFerocity.Windows
     {
         private DeferredAction _deferredAction;
         private readonly TimeSpan _saveDelay = TimeSpan.FromMilliseconds(500);
-        private Note _currentNote;
-
+        
         public ObservableCollection<Note> Notes { get; private set; }
         public StringCollection Extensions { get; private set; }
         public FileSystemWatcher NoteWatcher { get; private set; }
 
         protected bool LoadingText { get; set; }
 
-        private const Int32 SettingsMenuId = 1000;
-        private const Int32 AboutMenuId = 1001;
+        private const uint SettingsMenuId = 1000;
+        private const uint AboutMenuId = 1001;
+        private const uint MonospacedId = 1002;
 
         internal override bool HandleWndProc(IntPtr wParam)
         {
             // Execute the appropriate code for the System Menu item that was clicked
-            switch (wParam.ToInt32())
+            switch (Convert.ToUInt32(wParam.ToInt32()))
             {
                 case SettingsMenuId:
                     var settings = new SettingsWindow();
@@ -49,23 +49,45 @@ namespace NotationalFerocity.Windows
                     MessageBox.Show("A work in progress.");
 
                     return true;
+                case MonospacedId:
+                    switch (noteRichTextBox.FontSelection)
+                    {
+                        case FontSelection.Proportional:
+                            noteRichTextBox.FontSelection = FontSelection.Monospaced;
+
+                            ModifyMenu(SystemMenuHandle, 9, MF_BYPOSITION | MF_CHECKED, MonospacedId, "Use &monospaced font");
+                            
+                            break;
+                        default:
+                            noteRichTextBox.FontSelection = FontSelection.Proportional;
+
+                            ModifyMenu(SystemMenuHandle, 9, MF_BYPOSITION | MF_UNCHECKED, MonospacedId, "Use &monospaced font");
+                            
+                            break;
+                    }
+
+                    return true;
             }
 
             return false;
         }
 
+        public static readonly DependencyProperty CurrentNoteProperty =
+            DependencyProperty.Register("CurrentNote",
+                typeof (Note), 
+                typeof (MainWindow), 
+                new PropertyMetadata(default(Note)));
+
         public Note CurrentNote
         {
             get
             {
-                return _currentNote;
+                return (Note)GetValue(CurrentNoteProperty);
             }
 
             set
             {
-                _currentNote = value;
-
-                notesListBox.SelectedItem = _currentNote;
+                SetValue(CurrentNoteProperty, value);
             }
         }
 
@@ -118,10 +140,6 @@ namespace NotationalFerocity.Windows
             NoteWatcher.EnableRaisingEvents = false;
 
             DataContext = this;
-
-            // TODO: Add logic based on whether the current note should use a proportional or monospaced font
-            // TODO: This doesn't update automatically -- Need a singleton?
-            noteRichTextBox.DataContext = Settings.Default.FontProportional;
         }
 
         private void InvokeIfNeeded(Action action)
@@ -155,8 +173,12 @@ namespace NotationalFerocity.Windows
             // Create our new System Menu items just before the Close menu item
             InsertMenu(SystemMenuHandle, 5, MF_BYPOSITION | MF_SEPARATOR, 0, string.Empty);
 
-            InsertMenu(SystemMenuHandle, 6, MF_BYPOSITION, SettingsMenuId, "Settings...");
-            InsertMenu(SystemMenuHandle, 7, MF_BYPOSITION, AboutMenuId, "About...");
+            InsertMenu(SystemMenuHandle, 6, MF_BYPOSITION, SettingsMenuId, "&Settings...");
+            InsertMenu(SystemMenuHandle, 7, MF_BYPOSITION, AboutMenuId, "&About...");
+
+            InsertMenu(SystemMenuHandle, 8, MF_BYPOSITION | MF_SEPARATOR, 0, string.Empty);
+
+            InsertMenu(SystemMenuHandle, 9, MF_BYPOSITION, MonospacedId, "Use &monospaced font");
 
             RefreshNotes();
         }
@@ -217,28 +239,18 @@ namespace NotationalFerocity.Windows
         {
             LoadingText = true;
 
-            noteRichTextBox.Document.Blocks.Clear();
-
-            var paragraph = new Paragraph();
-
-            paragraph.Inlines.Add(new Run(File.ReadAllText(CurrentNote.FileSystemInfo.FullName)));
-
-            noteRichTextBox.Document.Blocks.Add(paragraph);
-
+            noteRichTextBox.Document = CurrentNote.Document;
+            
             LoadingText = false;
         }
 
         /// <summary>
         /// Filter based on whether the note contains the text in searchTextBox.Text
         /// </summary>
-        private bool SearchFilter(object o)
+        private bool SearchFilter(object item)
         {
-            return o as Note != null && (o as Note).ToString().ToLower().Contains(searchTextBox.Text.ToLower());
-        }
-
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            Settings.Default.Save();
+            return item as Note != null &&
+                (item as Note).ToString().ToLower().Contains(searchTextBox.Text.ToLower());
         }
 
         private void notesListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -269,22 +281,10 @@ namespace NotationalFerocity.Windows
                 GetView().Filter = SearchFilter;
             }
 
-            if (notesListBox.Items.Count == 1)
+            if (notesListView.Items.Count == 1)
             {
                 CurrentNote = GetView().GetItemAt(0) as Note;
-
-                UpdateText();
             }
-        }
-
-        /// <summary>
-        /// A convenience function to get the contents of the RichTextBox
-        /// </summary>
-        /// <returns>The contents of the RichTextBox</returns>
-        private string GetText()
-        {
-            return new TextRange(noteRichTextBox.Document.ContentStart,
-                                 noteRichTextBox.Document.ContentEnd).Text;
         }
 
         /// <summary>
@@ -297,25 +297,15 @@ namespace NotationalFerocity.Windows
                 return;
             }
 
+            // TODO: Make this use binding instead?
+            CurrentNote.Text = noteRichTextBox.GetText();
+
             if (_deferredAction == null)
             {
-                _deferredAction = DeferredAction.Create(SaveText);
+                _deferredAction = DeferredAction.Create(CurrentNote.Save);
             }
 
             _deferredAction.Defer(_saveDelay);
-        }
-
-        /// <summary>
-        /// Save the contents of the RichTextBox to the note file.
-        /// </summary>
-        private void SaveText()
-        {
-            if (CurrentNote == null)
-            {
-                return;
-            }
-
-            File.WriteAllText(CurrentNote.FileSystemInfo.FullName, GetText());
         }
 
         /// <summary>
@@ -339,13 +329,16 @@ namespace NotationalFerocity.Windows
             AddNote(Note.FromTitle(searchTextBox.Text));
         }
 
-        private void noteRichTextBox_SourceUpdated(object sender, DataTransferEventArgs e)
+        private void Markdown_Click(object sender, RoutedEventArgs e)
         {
-            Console.WriteLine(sender.ToString());
+            var markdownWindow = new MarkdownWindow(CurrentNote);
 
-            Console.WriteLine(e.Property);
-            Console.WriteLine(e.Source);
-            Console.WriteLine(e.OriginalSource);
+            markdownWindow.Show();
+        }
+
+        private void Rename_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

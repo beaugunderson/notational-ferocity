@@ -77,6 +77,9 @@ namespace NotationalFerocity.Windows
             }
         }
 
+        /// <summary>
+        /// Shows a folder browser so the user can select a notes directory.
+        /// </summary>
         private void browseButton_Click(object sender, RoutedEventArgs e)
         {
             var folder = new FolderBrowserDialog

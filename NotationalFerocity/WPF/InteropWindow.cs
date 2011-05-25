@@ -15,13 +15,19 @@ namespace NotationalFerocity.WPF
         private static extern IntPtr GetSystemMenu(IntPtr hWnd, bool bRevert);
 
         [DllImport("user32.dll")]
-        protected static extern bool InsertMenu(IntPtr hMenu, Int32 wPosition, Int32 wFlags, Int32 wIDNewItem, string lpNewItem);
+        protected static extern bool InsertMenu(IntPtr hMenu, uint uPosition, uint uFlags, uint uIDNewItem, [Optional]string lpNewItem);
 
-        internal const Int32 WM_SYSCOMMAND = 0x112;
-        internal const Int32 MF_SEPARATOR = 0x800;
-        internal const Int32 MF_BYPOSITION = 0x400;
-        internal const Int32 MF_STRING = 0x0;
+        [DllImport("user32.dll")]
+        protected static extern bool ModifyMenu(IntPtr hMenu, uint uPosition, uint uFlags, uint uIDNewItem, [Optional]string lpNewItem);
 
+        internal const uint WM_SYSCOMMAND = 0x112;
+
+        internal const uint MF_SEPARATOR = 0x800;
+        internal const uint MF_BYPOSITION = 0x400;
+        internal const uint MF_STRING = 0x0;
+        internal const uint MF_CHECKED = 0x8;
+        internal const uint MF_UNCHECKED = 0x0;
+        
         /// <summary>
         /// The Win32 Interop Handle for this Window
         /// </summary>
