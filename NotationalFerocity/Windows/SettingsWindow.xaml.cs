@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Specialized;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Media;
 using NotationalFerocity.WPF;
@@ -22,9 +22,59 @@ namespace NotationalFerocity.Windows
     /// </summary>
     public partial class SettingsWindow
     {
+        private string _notesDirectory;
+        private string _extensions;
+
         public SettingsWindow()
         {
             InitializeComponent();
+
+            DataContext = this;
+
+            // Load notes directory
+            NotesDirectory = Settings.Default.NotesDirectory;
+
+            // Load file extensions
+            var extensions = new string[Settings.Default.Extensions.Count];
+
+            Settings.Default.Extensions.CopyTo(extensions, 0);
+
+            Extensions = String.Join("; ", extensions);
+        }
+
+        public string NotesDirectory
+        {
+            get
+            {
+                return _notesDirectory;
+            }
+
+            set
+            {
+                _notesDirectory = value;
+                
+                if (!Directory.Exists(value))
+                {
+                    throw new ApplicationException("The directory does not exist.");
+                }
+            }
+        }
+
+        public string Extensions
+        {
+            get {
+                return _extensions;
+            }
+
+            set
+            {
+                _extensions = value;
+
+                if (String.IsNullOrWhiteSpace(value))
+                {
+                    throw new ApplicationException("You must provide a list of extensions.");
+                }
+            }
         }
 
         private void browseButton_Click(object sender, RoutedEventArgs e)
@@ -50,25 +100,25 @@ namespace NotationalFerocity.Windows
 
         private void okButton_Click(object sender, RoutedEventArgs e)
         {
-            Settings.Default.NoteFontMonospaced = SettingsFontDefinition.FromFontDefinition(FontDefinition.FromDependencyObject(monospacedFontTextBox));
-            Settings.Default.NoteFontProportional = SettingsFontDefinition.FromFontDefinition(FontDefinition.FromDependencyObject(proportionalFontTextBox));
+            Settings.Default.FontProportional = SettingsFontDefinition.FromFontDefinition(FontDefinition.FromDependencyObject(proportionalFontTextBox));
+            Settings.Default.FontMonospaced = SettingsFontDefinition.FromFontDefinition(FontDefinition.FromDependencyObject(monospacedFontTextBox));
+            Settings.Default.FontMarkdown = SettingsFontDefinition.FromFontDefinition(FontDefinition.FromDependencyObject(markdownFontTextBox));
+            Settings.Default.FontDisplay = SettingsFontDefinition.FromFontDefinition(FontDefinition.FromDependencyObject(displayFontTextBox));
 
             Settings.Default.NotesDirectory = notesDirectoryTextBox.Text.Trim();
 
             var extensions = new StringCollection();
 
-            foreach (var extension in Regex.Split(extensionsTextBox.Text.Trim(), @"[\s,;]+"))
+            foreach (var extension in Regex.Split(extensionsTextBox.Text.Trim(), @"[\s,;]+")
+                .Where(extension => !String.IsNullOrWhiteSpace(extension)))
             {
-                if (!String.IsNullOrWhiteSpace(extension))
-                {
-                    extensions.Add(extension.Trim());
-                }
+                extensions.Add(extension.Trim());
             }
 
             Settings.Default.Extensions = extensions;
 
-            Settings.Default.ColorBackground = backgroundColorPicker.SelectedColor;
-            Settings.Default.ColorForeground = foregroundColorPicker.SelectedColor;
+            Settings.Default.ColorBackground = new SolidColorBrush(backgroundColorPicker.SelectedColor);
+            Settings.Default.ColorForeground = new SolidColorBrush(foregroundColorPicker.SelectedColor);
 
             Settings.Default.Save();
             
@@ -77,27 +127,17 @@ namespace NotationalFerocity.Windows
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            // Load notes directory
-            notesDirectoryTextBox.Text = Settings.Default.NotesDirectory;
-
-            // Load file extensions
-            var extensions = new string[Settings.Default.Extensions.Count];
-
-            Settings.Default.Extensions.CopyTo(extensions, 0);
-
-            extensionsTextBox.Text = String.Join("; ", extensions);
-        
             // Load monospaced font
-            monospacedFontTextBox.Text = SetFontProperties(monospacedFontTextBox, Settings.Default.NoteFontMonospaced);
+            monospacedFontTextBox.Text = SetFontProperties(monospacedFontTextBox, Settings.Default.FontMonospaced);
 
             // Load proprtional font
-            proportionalFontTextBox.Text = SetFontProperties(proportionalFontTextBox, Settings.Default.NoteFontProportional);
+            proportionalFontTextBox.Text = SetFontProperties(proportionalFontTextBox, Settings.Default.FontProportional);
         
             // Load background color
-            backgroundColorPicker.SelectedColor = Settings.Default.ColorBackground;
+            backgroundColorPicker.SelectedColor = Settings.Default.ColorBackground.Color;
 
             // Load foreground color
-            foregroundColorPicker.SelectedColor = Settings.Default.ColorForeground;
+            foregroundColorPicker.SelectedColor = Settings.Default.ColorForeground.Color;
         }
 
         private string SetFontProperties(DependencyObject control, SettingsFontDefinition settingsFontDefinition)
@@ -107,49 +147,6 @@ namespace NotationalFerocity.Windows
             fontDefinition.ApplyToDependencyObject(control);
 
             return string.Format("{0}, {1}pt", fontDefinition.FontFamily, fontDefinition.FontSize);
-        }
-
-        private void notesDirectoryTextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            ValidateNotesDirectoryTextBox();
-        }
-
-        private void extensionsTextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            ValidateExtensionsTextBox();
-        }
-
-        private void ValidateExtensionsTextBox()
-        {
-            bool error = false;
-
-            if (String.IsNullOrWhiteSpace(extensionsTextBox.Text))
-            {
-                error = true;
-            }
-
-            DisplayErrorStatus(extensionsTextBox, error);
-        }
-
-        private void ValidateNotesDirectoryTextBox()
-        {
-            DisplayErrorStatus(notesDirectoryTextBox, !Directory.Exists(notesDirectoryTextBox.Text));
-        }
-
-        private void DisplayErrorStatus(TextBox textBox, bool errorStatus)
-        {
-            if (errorStatus)
-            {
-                var errorColor = Colors.OrangeRed;
-
-                errorColor.A = 128;
-
-                textBox.Background = new SolidColorBrush(errorColor);
-            }
-            else
-            {
-                textBox.ClearValue(BackgroundProperty);
-            }
         }
 
         private void proportionalFontButton_Click(object sender, RoutedEventArgs e)

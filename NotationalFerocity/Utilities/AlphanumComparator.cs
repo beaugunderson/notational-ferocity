@@ -27,6 +27,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  */
+
 using System;
 using System.Collections;
 using System.Text;
@@ -35,7 +36,7 @@ using System.Text;
  * Please compare against the latest Java version at http://www.DaveKoelle.com
  * to see the most recent modifications 
  */
-namespace NotationalFerocity
+namespace NotationalFerocity.Utilities
 {
     public class AlphanumComparator : IComparer
     {

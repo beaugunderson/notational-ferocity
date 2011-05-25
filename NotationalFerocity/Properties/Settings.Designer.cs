@@ -13,7 +13,7 @@ namespace NotationalFerocity.Properties {
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "10.0.0.0")]
-    internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
+    public sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
         
@@ -56,9 +56,9 @@ namespace NotationalFerocity.Properties {
         [global::System.Configuration.SettingsDescriptionAttribute("The background color.")]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("#FFFFFFFF")]
-        public global::System.Windows.Media.Color ColorBackground {
+        public global::System.Windows.Media.SolidColorBrush ColorBackground {
             get {
-                return ((global::System.Windows.Media.Color)(this["ColorBackground"]));
+                return ((global::System.Windows.Media.SolidColorBrush)(this["ColorBackground"]));
             }
             set {
                 this["ColorBackground"] = value;
@@ -72,9 +72,9 @@ namespace NotationalFerocity.Properties {
         [global::System.Configuration.SettingsDescriptionAttribute("The foreground color.")]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("#FF000000")]
-        public global::System.Windows.Media.Color ColorForeground {
+        public global::System.Windows.Media.SolidColorBrush ColorForeground {
             get {
-                return ((global::System.Windows.Media.Color)(this["ColorForeground"]));
+                return ((global::System.Windows.Media.SolidColorBrush)(this["ColorForeground"]));
             }
             set {
                 this["ColorForeground"] = value;
@@ -87,32 +87,43 @@ namespace NotationalFerocity.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Configuration.SettingsDescriptionAttribute("The font used to display notes viewed with a proportional font.")]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        public global::NotationalFerocity.WPF.SettingsFontDefinition NoteFontProportional {
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?><Font xmlns:xsi=\"http://www.w3.org/2001/XM" +
+            "LSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" FontFamily=\"Segoe" +
+            " UI\" FontStyle=\"Normal\" FontWeight=\"Normal\" FontStretch=\"Normal\" FontSize=\"12\" /" +
+            ">")]
+        public global::NotationalFerocity.WPF.SettingsFontDefinition FontProportional {
             get {
-                return ((global::NotationalFerocity.WPF.SettingsFontDefinition)(this["NoteFontProportional"]));
+                return ((global::NotationalFerocity.WPF.SettingsFontDefinition)(this["FontProportional"]));
             }
             set {
-                this["NoteFontProportional"] = value;
+                this["FontProportional"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        public global::NotationalFerocity.WPF.SettingsFontDefinition NoteFontMonospaced {
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?><Font xmlns:xsi=\"http://www.w3.org/2001/XM" +
+            "LSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" FontFamily=\"Segoe" +
+            " UI\" FontStyle=\"Normal\" FontWeight=\"Normal\" FontStretch=\"Normal\" FontSize=\"12\" /" +
+            ">")]
+        public global::NotationalFerocity.WPF.SettingsFontDefinition FontMonospaced {
             get {
-                return ((global::NotationalFerocity.WPF.SettingsFontDefinition)(this["NoteFontMonospaced"]));
+                return ((global::NotationalFerocity.WPF.SettingsFontDefinition)(this["FontMonospaced"]));
             }
             set {
-                this["NoteFontMonospaced"] = value;
+                this["FontMonospaced"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Segoe UI, 12pt")]
-        public global::System.Drawing.Font FontDisplay {
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?><Font xmlns:xsi=\"http://www.w3.org/2001/XM" +
+            "LSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" FontFamily=\"Segoe" +
+            " UI\" FontStyle=\"Normal\" FontWeight=\"Normal\" FontStretch=\"Normal\" FontSize=\"12\" /" +
+            ">")]
+        public global::NotationalFerocity.WPF.SettingsFontDefinition FontDisplay {
             get {
-                return ((global::System.Drawing.Font)(this["FontDisplay"]));
+                return ((global::NotationalFerocity.WPF.SettingsFontDefinition)(this["FontDisplay"]));
             }
             set {
                 this["FontDisplay"] = value;
@@ -121,10 +132,13 @@ namespace NotationalFerocity.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Segoe UI, 12pt")]
-        public global::System.Drawing.Font FontMarkdown {
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?><Font xmlns:xsi=\"http://www.w3.org/2001/XM" +
+            "LSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" FontFamily=\"Segoe" +
+            " UI\" FontStyle=\"Normal\" FontWeight=\"Normal\" FontStretch=\"Normal\" FontSize=\"12\" /" +
+            ">")]
+        public global::NotationalFerocity.WPF.SettingsFontDefinition FontMarkdown {
             get {
-                return ((global::System.Drawing.Font)(this["FontMarkdown"]));
+                return ((global::NotationalFerocity.WPF.SettingsFontDefinition)(this["FontMarkdown"]));
             }
             set {
                 this["FontMarkdown"] = value;

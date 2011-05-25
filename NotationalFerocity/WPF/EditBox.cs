@@ -240,13 +240,6 @@ namespace NotationalFerocity.WPF
         {
             var newFocusedElement = e.NewFocus as ContextMenu;
 
-            Console.WriteLine("New focused element: " + newFocusedElement);
-
-            Console.WriteLine("    " + e.Source);
-            Console.WriteLine("    " + e.OriginalSource);
-            Console.WriteLine("    " + e.OldFocus);
-            Console.WriteLine("    " + e.NewFocus);
-
             if (IsEditing && newFocusedElement != null &&
                 newFocusedElement.PlacementTarget == _textBox)
             {
@@ -254,8 +247,6 @@ namespace NotationalFerocity.WPF
             }
             else
             {
-                Console.WriteLine("Lost focus.");
-
                 IsEditing = false;
             }
         }
@@ -266,8 +257,6 @@ namespace NotationalFerocity.WPF
         /// </summary>
         private void OnCouldSwitchToNormalMode(object sender, RoutedEventArgs e)
         {
-            Console.WriteLine("Could switch to normal mode: {0}", e.Source);
-            
             IsEditing = false;
         }
 
@@ -305,8 +294,6 @@ namespace NotationalFerocity.WPF
             if (IsEditing && Mouse.PrimaryDevice.LeftButton ==
                 MouseButtonState.Pressed)
             {
-                Console.WriteLine("Scroll viewer changed.");
-
                 IsEditing = false;
             }
         }

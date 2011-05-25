@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace NotationalFerocity.WPF
@@ -21,12 +22,10 @@ namespace NotationalFerocity.WPF
 
         public void ApplyToDependencyObject(DependencyObject control)
         {
-            foreach (var property in _properties)
+            foreach (var property in _properties
+                .Where(property => property != null))
             {
-                if (property != null)
-                {
-                    control.SetValue(property, GetValue(property));
-                }
+                control.SetValue(property, GetValue(property));
             }
         }
 
@@ -34,12 +33,10 @@ namespace NotationalFerocity.WPF
         {
             var fontDefinition = new FontDefinition();
 
-            foreach (var property in _properties)
+            foreach (var property in _properties
+                .Where(property => property != null))
             {
-                if (property != null)
-                {
-                    fontDefinition.SetValue(property, control.GetValue(property));
-                }
+                fontDefinition.SetValue(property, control.GetValue(property));
             }
 
             return fontDefinition;

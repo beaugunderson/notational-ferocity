@@ -12,23 +12,23 @@
     <Setting Name="NotesDirectory" Type="System.String" Scope="User">
       <Value Profile="(Default)">C:\Notes</Value>
     </Setting>
-    <Setting Name="ColorBackground" Description="The background color." Type="System.Windows.Media.Color" Scope="User">
+    <Setting Name="ColorBackground" Description="The background color." Type="System.Windows.Media.SolidColorBrush" Scope="User">
       <Value Profile="(Default)">#FFFFFFFF</Value>
     </Setting>
-    <Setting Name="ColorForeground" Description="The foreground color." Type="System.Windows.Media.Color" Scope="User">
+    <Setting Name="ColorForeground" Description="The foreground color." Type="System.Windows.Media.SolidColorBrush" Scope="User">
       <Value Profile="(Default)">#FF000000</Value>
     </Setting>
-    <Setting Name="NoteFontProportional" Description="The font used to display notes viewed with a proportional font." Type="NotationalFerocity.WPF.SettingsFontDefinition" Scope="User">
-      <Value Profile="(Default)" />
+    <Setting Name="FontProportional" Description="The font used to display notes viewed with a proportional font." Type="NotationalFerocity.WPF.SettingsFontDefinition" Scope="User">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;&lt;Font xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" FontFamily="Segoe UI" FontStyle="Normal" FontWeight="Normal" FontStretch="Normal" FontSize="12" /&gt;</Value>
     </Setting>
-    <Setting Name="NoteFontMonospaced" Type="NotationalFerocity.WPF.SettingsFontDefinition" Scope="User">
-      <Value Profile="(Default)" />
+    <Setting Name="FontMonospaced" Type="NotationalFerocity.WPF.SettingsFontDefinition" Scope="User">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;&lt;Font xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" FontFamily="Segoe UI" FontStyle="Normal" FontWeight="Normal" FontStretch="Normal" FontSize="12" /&gt;</Value>
     </Setting>
-    <Setting Name="FontDisplay" Type="System.Drawing.Font" Scope="User">
-      <Value Profile="(Default)">Segoe UI, 12pt</Value>
+    <Setting Name="FontDisplay" Type="NotationalFerocity.WPF.SettingsFontDefinition" Scope="User">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;&lt;Font xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" FontFamily="Segoe UI" FontStyle="Normal" FontWeight="Normal" FontStretch="Normal" FontSize="12" /&gt;</Value>
     </Setting>
-    <Setting Name="FontMarkdown" Type="System.Drawing.Font" Scope="User">
-      <Value Profile="(Default)">Segoe UI, 12pt</Value>
+    <Setting Name="FontMarkdown" Type="NotationalFerocity.WPF.SettingsFontDefinition" Scope="User">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;&lt;Font xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" FontFamily="Segoe UI" FontStyle="Normal" FontWeight="Normal" FontStretch="Normal" FontSize="12" /&gt;</Value>
     </Setting>
   </Settings>
 </SettingsFile>

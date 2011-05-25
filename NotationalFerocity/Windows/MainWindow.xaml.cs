@@ -31,21 +31,21 @@ namespace NotationalFerocity.Windows
 
         protected bool LoadingText { get; set; }
 
-        private const Int32 _SettingsMenuId = 1000;
-        private const Int32 _AboutMenuId = 1001;
+        private const Int32 SettingsMenuId = 1000;
+        private const Int32 AboutMenuId = 1001;
 
         internal override bool HandleWndProc(IntPtr wParam)
         {
             // Execute the appropriate code for the System Menu item that was clicked
             switch (wParam.ToInt32())
             {
-                case _SettingsMenuId:
+                case SettingsMenuId:
                     var settings = new SettingsWindow();
 
                     settings.ShowDialog();
 
                     return true;
-                case _AboutMenuId:
+                case AboutMenuId:
                     MessageBox.Show("A work in progress.");
 
                     return true;
@@ -118,6 +118,10 @@ namespace NotationalFerocity.Windows
             NoteWatcher.EnableRaisingEvents = false;
 
             DataContext = this;
+
+            // TODO: Add logic based on whether the current note should use a proportional or monospaced font
+            // TODO: This doesn't update automatically -- Need a singleton?
+            noteRichTextBox.DataContext = Settings.Default.FontProportional;
         }
 
         private void InvokeIfNeeded(Action action)
@@ -151,8 +155,8 @@ namespace NotationalFerocity.Windows
             // Create our new System Menu items just before the Close menu item
             InsertMenu(SystemMenuHandle, 5, MF_BYPOSITION | MF_SEPARATOR, 0, string.Empty);
 
-            InsertMenu(SystemMenuHandle, 6, MF_BYPOSITION, _SettingsMenuId, "Settings...");
-            InsertMenu(SystemMenuHandle, 7, MF_BYPOSITION, _AboutMenuId, "About...");
+            InsertMenu(SystemMenuHandle, 6, MF_BYPOSITION, SettingsMenuId, "Settings...");
+            InsertMenu(SystemMenuHandle, 7, MF_BYPOSITION, AboutMenuId, "About...");
 
             RefreshNotes();
         }
@@ -306,6 +310,11 @@ namespace NotationalFerocity.Windows
         /// </summary>
         private void SaveText()
         {
+            if (CurrentNote == null)
+            {
+                return;
+            }
+
             File.WriteAllText(CurrentNote.FileSystemInfo.FullName, GetText());
         }
 
@@ -328,6 +337,15 @@ namespace NotationalFerocity.Windows
             }
 
             AddNote(Note.FromTitle(searchTextBox.Text));
+        }
+
+        private void noteRichTextBox_SourceUpdated(object sender, DataTransferEventArgs e)
+        {
+            Console.WriteLine(sender.ToString());
+
+            Console.WriteLine(e.Property);
+            Console.WriteLine(e.Source);
+            Console.WriteLine(e.OriginalSource);
         }
     }
 }
