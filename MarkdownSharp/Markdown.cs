@@ -91,7 +91,6 @@ using System.Text.RegularExpressions;
 
 namespace MarkdownSharp
 {
-
     public class MarkdownOptions
     {
         /// <summary>
