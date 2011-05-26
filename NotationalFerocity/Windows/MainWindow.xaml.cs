@@ -2,12 +2,17 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Forms;
+
+using Application = System.Windows.Application;
+using MessageBox = System.Windows.MessageBox;
 
 using NotationalFerocity.Models;
 using NotationalFerocity.Properties;
@@ -22,7 +27,10 @@ namespace NotationalFerocity.Windows
     public partial class MainWindow
     {
         private DeferredAction _deferredAction;
+        private WindowState _storedWindowState;
+
         private readonly TimeSpan _saveDelay = TimeSpan.FromMilliseconds(500);
+        private readonly NotifyIcon _notifyIcon; 
         
         public ObservableCollection<Note> Notes { get; private set; }
         public StringCollection Extensions { get; private set; }
@@ -139,6 +147,27 @@ namespace NotationalFerocity.Windows
             NoteWatcher.IncludeSubdirectories = true;
             NoteWatcher.EnableRaisingEvents = false;
 
+
+            var iconInfo = Application.GetResourceStream(new Uri(@"pack://application:,,/Images/MainIcon.ico"));
+
+            if (iconInfo == null)
+            {
+                throw new ApplicationException("Unable to load the application icon.");
+            }
+
+            using (iconInfo.Stream)
+            {
+               _notifyIcon = new NotifyIcon
+               {
+                   BalloonTipText = "Notational Ferocity has been minimized. Click the tray icon to show it.",
+                   BalloonTipTitle = "Notational Ferocity",
+                   Text = "Notational Ferocity",
+                   Icon = new Icon(iconInfo.Stream)
+               };
+   
+               _notifyIcon.Click += notifyIcon_Click;
+            }
+            
             DataContext = this;
         }
 
@@ -188,6 +217,10 @@ namespace NotationalFerocity.Windows
             return (ListCollectionView)CollectionViewSource.GetDefaultView(Notes);
         }
 
+        /// <summary>
+        /// A generator that returns notes from the filesystem.
+        /// </summary>
+        /// <returns></returns>
         private IEnumerable<FileSystemInfo> GetNotes()
         {
             var queue = new Queue<DirectoryInfo>();
@@ -339,6 +372,47 @@ namespace NotationalFerocity.Windows
         private void Rename_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void InteropWindow_StateChanged(object sender, EventArgs e)
+        {
+            if (WindowState == WindowState.Minimized)
+            {
+                Hide();
+                
+                if (_notifyIcon != null)
+                {
+                    _notifyIcon.ShowBalloonTip(2000);
+                }
+            }
+            else
+            {
+                _storedWindowState = WindowState;
+            }
+        }
+
+        private void InteropWindow_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            CheckTrayIcon();
+        }
+
+        void notifyIcon_Click(object sender, EventArgs e)
+        {
+            Show();
+
+            WindowState = _storedWindowState;
+        }
+        void CheckTrayIcon()
+        {
+            ShowTrayIcon(!IsVisible);
+        }
+
+        void ShowTrayIcon(bool show)
+        {
+            if (_notifyIcon != null)
+            {
+                _notifyIcon.Visible = show;
+            }
         }
     }
 }

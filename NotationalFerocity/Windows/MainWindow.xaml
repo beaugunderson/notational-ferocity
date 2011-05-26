@@ -2,15 +2,18 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:l="clr-namespace:NotationalFerocity.WPF"
         xmlns:s="clr-namespace:NotationalFerocity.Properties"
         xmlns:w="clr-namespace:NotationalFerocity.Windows"
         Title="Notational Ferocity"
         Height="350" Width="525"
         AllowDrop="True"
-        Loaded="Window_Loaded"
+        Icon="pack://application:,,/Images/MainIcon.ico"
         mc:Ignorable="d"
+        Loaded="Window_Loaded"
+        StateChanged="InteropWindow_StateChanged"
+        IsVisibleChanged="InteropWindow_IsVisibleChanged"
         d:DataContext="{d:DesignInstance w:MainWindow}">
     <Window.Resources>
         <Style TargetType="{x:Type Paragraph}">

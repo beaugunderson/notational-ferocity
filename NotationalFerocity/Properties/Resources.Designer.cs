@@ -59,5 +59,14 @@ namespace NotationalFerocity.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Notational Ferocity.
+        /// </summary>
+        internal static string Application_Title {
+            get {
+                return ResourceManager.GetString("Application_Title", resourceCulture);
+            }
+        }
     }
 }
