@@ -9,10 +9,12 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Forms;
 
 using Application = System.Windows.Application;
 using MessageBox = System.Windows.MessageBox;
+using MenuItem = System.Windows.Controls.MenuItem;
 
 using NotationalFerocity.Models;
 using NotationalFerocity.Properties;
@@ -30,8 +32,8 @@ namespace NotationalFerocity.Windows
         private WindowState _storedWindowState;
 
         private readonly TimeSpan _saveDelay = TimeSpan.FromMilliseconds(500);
-        private readonly NotifyIcon _notifyIcon; 
-        
+        private readonly NotifyIcon _notifyIcon;
+
         public ObservableCollection<Note> Notes { get; private set; }
         public StringCollection Extensions { get; private set; }
         public FileSystemWatcher NoteWatcher { get; private set; }
@@ -64,13 +66,13 @@ namespace NotationalFerocity.Windows
                             noteRichTextBox.FontSelection = FontSelection.Monospaced;
 
                             ModifyMenu(SystemMenuHandle, 9, MF_BYPOSITION | MF_CHECKED, MonospacedId, "Use &monospaced font");
-                            
+
                             break;
                         default:
                             noteRichTextBox.FontSelection = FontSelection.Proportional;
 
                             ModifyMenu(SystemMenuHandle, 9, MF_BYPOSITION | MF_UNCHECKED, MonospacedId, "Use &monospaced font");
-                            
+
                             break;
                     }
 
@@ -82,8 +84,8 @@ namespace NotationalFerocity.Windows
 
         public static readonly DependencyProperty CurrentNoteProperty =
             DependencyProperty.Register("CurrentNote",
-                typeof (Note), 
-                typeof (MainWindow), 
+                typeof(Note),
+                typeof(MainWindow),
                 new PropertyMetadata(default(Note)));
 
         public Note CurrentNote
@@ -157,17 +159,17 @@ namespace NotationalFerocity.Windows
 
             using (iconInfo.Stream)
             {
-               _notifyIcon = new NotifyIcon
-               {
-                   BalloonTipText = "Notational Ferocity has been minimized. Click the tray icon to show it.",
-                   BalloonTipTitle = "Notational Ferocity",
-                   Text = "Notational Ferocity",
-                   Icon = new Icon(iconInfo.Stream)
-               };
-   
-               _notifyIcon.Click += notifyIcon_Click;
+                _notifyIcon = new NotifyIcon
+                {
+                    BalloonTipText = "Notational Ferocity has been minimized. Click the tray icon to show it.",
+                    BalloonTipTitle = "Notational Ferocity",
+                    Text = "Notational Ferocity",
+                    Icon = new Icon(iconInfo.Stream)
+                };
+
+                _notifyIcon.Click += notifyIcon_Click;
             }
-            
+
             DataContext = this;
         }
 
@@ -273,7 +275,7 @@ namespace NotationalFerocity.Windows
             LoadingText = true;
 
             noteRichTextBox.Document = CurrentNote.Document;
-            
+
             LoadingText = false;
         }
 
@@ -379,7 +381,7 @@ namespace NotationalFerocity.Windows
             if (WindowState == WindowState.Minimized)
             {
                 Hide();
-                
+
                 if (_notifyIcon != null)
                 {
                     _notifyIcon.ShowBalloonTip(2000);
@@ -393,26 +395,90 @@ namespace NotationalFerocity.Windows
 
         private void InteropWindow_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            CheckTrayIcon();
+            if (_notifyIcon != null)
+            {
+                _notifyIcon.Visible = !IsVisible;
+            }
         }
 
         void notifyIcon_Click(object sender, EventArgs e)
         {
-            Show();
-
             WindowState = _storedWindowState;
-        }
-        void CheckTrayIcon()
-        {
-            ShowTrayIcon(!IsVisible);
+
+            Show();
         }
 
-        void ShowTrayIcon(bool show)
+        private void InteropWindow_Closed(object sender, EventArgs eventArgs)
         {
             if (_notifyIcon != null)
             {
-                _notifyIcon.Visible = show;
+                _notifyIcon.Dispose();
             }
+        }
+
+        /// <summary>
+        /// Add spelling suggestions to the context menu
+        /// </summary>
+        private void noteRichTextBox_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+            // Clear the context menu from its previous suggestions.
+            noteContextMenu.Items.Clear();
+
+            int cmdIndex = 0;
+
+            var markdownMenuItem = new MenuItem
+            {
+                Header = "Markdown"
+            };
+
+            markdownMenuItem.Click += Markdown_Click;
+
+            noteRichTextBox.ContextMenu.Items.Insert(cmdIndex++, markdownMenuItem);
+            
+            var spellingError = noteRichTextBox.GetSpellingError(noteRichTextBox.CaretPosition);
+
+            if (spellingError == null)
+            {
+                return;
+            }
+
+            noteRichTextBox.ContextMenu.Items.Insert(cmdIndex++, new Separator());
+
+            int count = 0;
+
+            // Add each suggestion up to 5 total
+            foreach (var str in spellingError.Suggestions)
+            {
+                if (count > 4)
+                {
+                    break;
+                }
+
+                var mi = new MenuItem
+                {
+                    Header = str,
+                    FontWeight = FontWeights.Bold,
+                    Command = EditingCommands.CorrectSpellingError,
+                    CommandParameter = str,
+                    CommandTarget = noteRichTextBox
+                };
+
+                noteRichTextBox.ContextMenu.Items.Insert(cmdIndex++, mi);
+                    
+                count++;
+            }
+            
+            // Add separator lines and IgnoreAll command.
+            noteRichTextBox.ContextMenu.Items.Insert(cmdIndex++, new Separator());
+                
+            var ignoreAllMenuItem = new MenuItem
+            {
+                Header = "Ignore All",
+                Command = EditingCommands.IgnoreSpellingError,
+                CommandTarget = noteRichTextBox
+            };
+
+            noteRichTextBox.ContextMenu.Items.Insert(cmdIndex, ignoreAllMenuItem);
         }
     }
 }

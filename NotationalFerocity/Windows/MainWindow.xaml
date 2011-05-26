@@ -15,7 +15,7 @@
         Loaded="Window_Loaded"
         StateChanged="InteropWindow_StateChanged"
         IsVisibleChanged="InteropWindow_IsVisibleChanged"
-        d:DataContext="{d:DesignInstance w:MainWindow}">
+        d:DataContext="{d:DesignInstance w:MainWindow}" Closed="InteropWindow_Closed">
     <Window.Style>
         <Style TargetType="{x:Type Window}">
             <Setter Property="Title" Value="{Binding Path=CurrentNote.FileNameWithoutExtension, StringFormat=Notational Ferocity - \{0\}}" />
@@ -59,11 +59,11 @@
         </Grid.ColumnDefinitions>
 
         <l:NoteRichTextBox Grid.Column="2" Margin="0,12,12,12" x:Name="noteRichTextBox"
+                SpellCheck.IsEnabled="True"
+                ContextMenuOpening="noteRichTextBox_ContextMenuOpening"
                 TextChanged="noteRichTextBox_TextChanged">
             <l:NoteRichTextBox.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Header="_Markdown" Click="Markdown_Click" />
-                </ContextMenu>
+                <ContextMenu Name="noteContextMenu" />
             </l:NoteRichTextBox.ContextMenu>
             
             <l:NoteRichTextBox.Style>

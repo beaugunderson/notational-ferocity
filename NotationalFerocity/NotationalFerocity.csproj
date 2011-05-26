@@ -87,8 +87,10 @@
     <Compile Include="Windows\MarkdownWindow.xaml.cs">
       <DependentUpon>MarkdownWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="WPF\ClickLabel.cs" />
     <Compile Include="WPF\FontSelection.cs" />
     <Compile Include="WPF\FullScreenBehavior.cs" />
+    <Compile Include="WPF\IconHelper.cs" />
     <Compile Include="WPF\NoteRichTextBox.cs" />
     <Compile Include="WPF\FontDefinition.cs" />
     <Compile Include="WPF\InteropWindow.cs" />

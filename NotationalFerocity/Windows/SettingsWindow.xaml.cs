@@ -133,8 +133,14 @@ namespace NotationalFerocity.Windows
             // Load monospaced font
             monospacedFontTextBox.Text = SetFontProperties(monospacedFontTextBox, Settings.Default.FontMonospaced);
 
-            // Load proprtional font
+            // Load proportional font
             proportionalFontTextBox.Text = SetFontProperties(proportionalFontTextBox, Settings.Default.FontProportional);
+
+            // Load display font
+            displayFontTextBox.Text = SetFontProperties(displayFontTextBox, Settings.Default.FontDisplay);
+            
+            // Load markdown font
+            markdownFontTextBox.Text = SetFontProperties(markdownFontTextBox, Settings.Default.FontMarkdown);
         
             // Load background color
             backgroundColorPicker.SelectedColor = Settings.Default.ColorBackground.Color;
@@ -162,6 +168,16 @@ namespace NotationalFerocity.Windows
             ShowFontDialog(monospacedFontTextBox);
         }
 
+        private void markdownFontButton_Click(object sender, RoutedEventArgs e)
+        {
+            ShowFontDialog(markdownFontTextBox);
+        }
+
+        private void displayFontButton_Click(object sender, RoutedEventArgs e)
+        {
+            ShowFontDialog(displayFontTextBox);
+        }
+
         private void ShowFontDialog(TextBox textBox)
         {
             var fontChooser = new FontChooser
@@ -185,6 +201,11 @@ namespace NotationalFerocity.Windows
             fontChooser.ApplyPropertiesToObject(fontDefinition);
 
             textBox.Text = fontDefinition.ToString();
+        }
+
+        private void Window_SourceInitialized(object sender, EventArgs e)
+        {
+            IconHelper.RemoveIcon(this);
         }
     }
 }

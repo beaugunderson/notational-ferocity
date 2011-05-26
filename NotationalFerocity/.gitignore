@@ -1,3 +1,4 @@
 /bin/
 /obj/
 /*.csproj.vs10x
+/*.csproj.ReSharper.user

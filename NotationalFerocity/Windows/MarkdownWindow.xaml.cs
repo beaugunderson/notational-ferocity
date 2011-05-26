@@ -1,6 +1,7 @@
 ﻿using MarkdownSharp;
 using NotationalFerocity.Models;
 using NotationalFerocity.Properties;
+using NotationalFerocity.WPF;
 
 namespace NotationalFerocity.Windows
 {
@@ -69,6 +70,11 @@ namespace NotationalFerocity.Windows
             var markedDown = wrapMarkdown(markdown.Transform(Note.Text));
 
             markdownWebBrowser.NavigateToString(markedDown);
+        }
+
+        private void Window_SourceInitialized(object sender, System.EventArgs e)
+        {
+            IconHelper.RemoveIcon(this);
         }
     }
 }
