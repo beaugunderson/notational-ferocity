@@ -6,8 +6,9 @@
         xmlns:l="clr-namespace:NotationalFerocity.WPF"
         xmlns:s="clr-namespace:NotationalFerocity.Properties"
         xmlns:w="clr-namespace:NotationalFerocity.Windows"
-        Title="Notational Ferocity"
-        Height="350" Width="525"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+        Height="350"
+        Width="525"
         AllowDrop="True"
         Icon="pack://application:,,/Images/MainIcon.ico"
         mc:Ignorable="d"
@@ -15,6 +16,18 @@
         StateChanged="InteropWindow_StateChanged"
         IsVisibleChanged="InteropWindow_IsVisibleChanged"
         d:DataContext="{d:DesignInstance w:MainWindow}">
+    <Window.Style>
+        <Style TargetType="{x:Type Window}">
+            <Setter Property="Title" Value="{Binding Path=CurrentNote.FileNameWithoutExtension, StringFormat=Notational Ferocity - \{0\}}" />
+
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Path=CurrentNote}" Value="{x:Null}">
+                    <Setter Property="Title" Value="Notational Ferocity" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Style>
+    
     <Window.Resources>
         <Style TargetType="{x:Type Paragraph}">
             <Setter Property="Margin" Value="0"/>
@@ -34,6 +47,10 @@
         </Style>
     </Window.Resources>
 
+    <i:Interaction.Behaviors>
+        <l:FullScreenBehavior FullScreenKey="F11" />
+    </i:Interaction.Behaviors>
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="150" />
@@ -42,9 +59,7 @@
         </Grid.ColumnDefinitions>
 
         <l:NoteRichTextBox Grid.Column="2" Margin="0,12,12,12" x:Name="noteRichTextBox"
-                TextChanged="noteRichTextBox_TextChanged" 
-                Foreground="{Binding Source={x:Static s:Settings.Default}, Path=ColorForeground}"
-                Background="{Binding Source={x:Static s:Settings.Default}, Path=ColorBackground}">
+                TextChanged="noteRichTextBox_TextChanged">
             <l:NoteRichTextBox.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="_Markdown" Click="Markdown_Click" />
@@ -53,6 +68,9 @@
             
             <l:NoteRichTextBox.Style>
                 <Style TargetType="{x:Type l:NoteRichTextBox}">
+                    <Setter Property="Foreground" Value="{Binding Source={x:Static s:Settings.Default}, Path=ColorForeground}" />
+                    <Setter Property="Background" Value="{Binding Source={x:Static s:Settings.Default}, Path=ColorBackground}" />
+
                     <Setter Property="FontFamily" Value="{Binding Source={x:Static s:Settings.Default}, Path=FontProportional.FontFamily}" />
                     <Setter Property="FontSize" Value="{Binding Source={x:Static s:Settings.Default}, Path=FontProportional.FontSize}" />
                     <Setter Property="FontStretch" Value="{Binding Source={x:Static s:Settings.Default}, Path=FontProportional.FontStretch}" />
