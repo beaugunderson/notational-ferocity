@@ -217,6 +217,70 @@
       </Trigger>
     </ControlTemplate.Triggers>
   </ControlTemplate>
+  <Style x:Key="{x:Type ListView}" TargetType="{x:Type ListView}">
+    <Setter Property="SnapsToDevicePixels" Value="True"></Setter>
+    <Setter Property="Background" Value="{DynamicResource WhiteBrush}"></Setter>
+    <Setter Property="BorderBrush" Value="{DynamicResource SolidBorderBrush}"></Setter>
+    <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"></Setter>
+    <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"></Setter>
+    <Setter Property="ScrollViewer.CanContentScroll" Value="True"></Setter>
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type ListBox}">
+          <Grid>
+            <Border Name="Border" BorderBrush="{TemplateBinding Control.BorderBrush}" BorderThickness="{TemplateBinding Control.BorderThickness}"></Border>
+            <ScrollViewer Margin="1" Focusable="False" Background="{TemplateBinding Control.Background}">
+              <StackPanel Margin="2" IsItemsHost="True"></StackPanel>
+            </ScrollViewer>
+          </Grid>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+              <Setter Value="{DynamicResource DisabledBackgroundBrush}" TargetName="Border" Property="Background"></Setter>
+              <Setter Value="{DynamicResource DisabledBorderBrush}" TargetName="Border" Property="BorderBrush"></Setter>
+            </Trigger>
+            <Trigger Property="IsGrouping" Value="True">
+              <Setter Property="ScrollViewer.CanContentScroll" Value="False"></Setter>
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+  <Style x:Key="{x:Type ListViewItem}" TargetType="{x:Type ListViewItem}">
+    <Setter Property="SnapsToDevicePixels" Value="True"></Setter>
+    <Setter Property="OverridesDefaultStyle" Value="True"></Setter>
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type ListBoxItem}">
+          <Grid SnapsToDevicePixels="True" Margin="0,1">
+            <Border Name="SelectedBorder" Opacity="0" BorderThickness="1" CornerRadius="2" BorderBrush="{DynamicResource SelectedListItemBorderBrush}">
+              <Border BorderBrush="{DynamicResource ListItemSelectedInsiderBorderBrush}" BorderThickness="1" CornerRadius="1" Background="{DynamicResource ListItemSelectedBackgroundBrush}"></Border>
+            </Border>
+            <Border Name="HoverBorder" BorderThickness="1" BorderBrush="{DynamicResource MouseOverBorderBrush}" CornerRadius="3" Opacity="0">
+              <Border BorderThickness="1" CornerRadius="2" Background="{DynamicResource ListItemHoverBrush}">
+                <Border.BorderBrush>
+                  <SolidColorBrush Color="{DynamicResource WhiteColor}"></SolidColorBrush>
+                </Border.BorderBrush>
+              </Border>
+            </Border>
+            <ContentPresenter HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}" Margin="10,4,0,4"></ContentPresenter>
+          </Grid>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+              <Setter TargetName="HoverBorder" Property="Opacity" Value="1"></Setter>
+            </Trigger>
+            <Trigger Property="IsSelected" Value="True">
+              <Setter Value="{DynamicResource SelectedBackgroundBrush}" TargetName="HoverBorder" Property="Background"></Setter>
+              <Setter TargetName="SelectedBorder" Property="Opacity" Value="1"></Setter>
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+              <Setter Value="{DynamicResource DisabledForegroundBrush}" Property="Foreground"></Setter>
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
   <Style x:Key="{x:Type ListBox}" TargetType="{x:Type ListBox}">
     <Setter Property="SnapsToDevicePixels" Value="True"></Setter>
     <Setter Property="Background" Value="{DynamicResource WhiteBrush}"></Setter>
