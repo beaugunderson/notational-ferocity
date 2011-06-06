@@ -1,4 +1,6 @@
 ﻿using MarkdownSharp;
+
+using NotationalFerocity.Formatting;
 using NotationalFerocity.Models;
 using NotationalFerocity.Properties;
 using NotationalFerocity.WPF;
@@ -6,25 +8,27 @@ using NotationalFerocity.WPF;
 namespace NotationalFerocity.Windows
 {
     /// <summary>
-    /// Interaction logic for MarkdownWindow.xaml
+    /// Interaction logic for OutputWindow.xaml
     /// </summary>
-    public partial class MarkdownWindow
+    public partial class OutputWindow
     {
         public Note Note { get; set; }
+        public OutputType OutputType { get; set; }
 
-        public MarkdownWindow(Note note)
+        public OutputWindow(Note note, OutputType outputType)
         {
             Note = note;
+            OutputType = outputType;
 
             InitializeComponent();
         }
 
-        public MarkdownWindow()
+        public OutputWindow()
         {
             InitializeComponent();
         }
 
-        private string wrapMarkdown(string markdown)
+        private string wrapOutput(string output)
         {
             var wrapped = string.Format(
 @"<html>
@@ -50,7 +54,7 @@ namespace NotationalFerocity.Windows
  </body>
 </html>",
                 Note.FileNameWithoutExtension,
-                markdown,
+                output,
                 string.Format("rgb({0:d}, {1:d}, {2:d})",
                     Settings.Default.ColorBackground.Color.R,
                     Settings.Default.ColorBackground.Color.G,
@@ -65,11 +69,30 @@ namespace NotationalFerocity.Windows
 
         private void Window_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
-            var markdown = new Markdown();
+            if (Note == null)
+            {
+                return;
+            }
 
-            var markedDown = wrapMarkdown(markdown.Transform(Note.Text));
+            string html;
 
-            markdownWebBrowser.NavigateToString(markedDown);
+            switch (OutputType)
+            {
+                case OutputType.Markdown:
+                    html = wrapOutput(new Markdown().Transform(Note.Text));
+
+                    break;
+                case OutputType.Textile:
+                    html = wrapOutput(Textile.TextileFormatter.FormatString(Note.Text));
+                    
+                    break;
+                default:
+                    html = "No formatter chosen.";
+                    
+                    break;
+            }
+
+            outputWebBrowser.NavigateToString(html);
         }
 
         private void Window_SourceInitialized(object sender, System.EventArgs e)

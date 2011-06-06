@@ -11,7 +11,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Forms;
-
+using NotationalFerocity.Formatting;
 using Application = System.Windows.Application;
 using MessageBox = System.Windows.MessageBox;
 using MenuItem = System.Windows.Controls.MenuItem;
@@ -31,7 +31,7 @@ namespace NotationalFerocity.Windows
         private DeferredAction _deferredAction;
         private WindowState _storedWindowState;
 
-        private readonly TimeSpan _saveDelay = TimeSpan.FromMilliseconds(500);
+        private readonly TimeSpan _saveDelay = TimeSpan.FromMilliseconds(1500);
         private readonly NotifyIcon _notifyIcon;
 
         public ObservableCollection<Note> Notes { get; private set; }
@@ -364,11 +364,18 @@ namespace NotationalFerocity.Windows
             AddNote(Note.FromTitle(searchTextBox.Text));
         }
 
+        private void Textile_Click(object sender, RoutedEventArgs e)
+        {
+            var outputWindow = new OutputWindow(CurrentNote, OutputType.Textile);
+
+            outputWindow.Show();
+        }
+
         private void Markdown_Click(object sender, RoutedEventArgs e)
         {
-            var markdownWindow = new MarkdownWindow(CurrentNote);
+            var outputWindow = new OutputWindow(CurrentNote, OutputType.Markdown);
 
-            markdownWindow.Show();
+            outputWindow.Show();
         }
 
         private void Rename_Click(object sender, RoutedEventArgs e)
@@ -424,16 +431,23 @@ namespace NotationalFerocity.Windows
             // Clear the context menu from its previous suggestions.
             noteContextMenu.Items.Clear();
 
-            int cmdIndex = 0;
+            int i = 0;
+
+            var textileMenuItem = new MenuItem
+            {
+                Header = "Format with _Textile..."
+            };
 
             var markdownMenuItem = new MenuItem
             {
-                Header = "Markdown"
+                Header = "Format with _Markdown..."
             };
 
+            textileMenuItem.Click += Textile_Click;
             markdownMenuItem.Click += Markdown_Click;
 
-            noteRichTextBox.ContextMenu.Items.Insert(cmdIndex++, markdownMenuItem);
+            noteRichTextBox.ContextMenu.Items.Insert(i++, textileMenuItem);
+            noteRichTextBox.ContextMenu.Items.Insert(i++, markdownMenuItem);
             
             var spellingError = noteRichTextBox.GetSpellingError(noteRichTextBox.CaretPosition);
 
@@ -442,43 +456,66 @@ namespace NotationalFerocity.Windows
                 return;
             }
 
-            noteRichTextBox.ContextMenu.Items.Insert(cmdIndex++, new Separator());
+            noteRichTextBox.ContextMenu.Items.Insert(i++, new Separator());
 
-            int count = 0;
+            int j = 0;
 
             // Add each suggestion up to 5 total
-            foreach (var str in spellingError.Suggestions)
+            foreach (var suggestion in spellingError.Suggestions)
             {
-                if (count > 4)
+                if (j++ > 4)
                 {
                     break;
                 }
 
                 var mi = new MenuItem
                 {
-                    Header = str,
+                    Header = suggestion,
                     FontWeight = FontWeights.Bold,
                     Command = EditingCommands.CorrectSpellingError,
-                    CommandParameter = str,
+                    CommandParameter = suggestion,
                     CommandTarget = noteRichTextBox
                 };
 
-                noteRichTextBox.ContextMenu.Items.Insert(cmdIndex++, mi);
-                    
-                count++;
+                noteRichTextBox.ContextMenu.Items.Insert(i++, mi);
             }
-            
-            // Add separator lines and IgnoreAll command.
-            noteRichTextBox.ContextMenu.Items.Insert(cmdIndex++, new Separator());
-                
-            var ignoreAllMenuItem = new MenuItem
+
+            // Add separator line
+            if (spellingError.Suggestions.Count() > 0)
             {
-                Header = "Ignore All",
+                noteRichTextBox.ContextMenu.Items.Insert(i++, new Separator());
+            }
+
+            var selection = noteRichTextBox.GetSpellingErrorRange(noteRichTextBox.CaretPosition);
+
+            if (selection == null)
+            {
+                return;
+            }
+
+            var addToDictionaryMenuItem = new MenuItem
+            {
+                Header = "Add to Dictionary",
                 Command = EditingCommands.IgnoreSpellingError,
+                CommandParameter = selection.Text,
                 CommandTarget = noteRichTextBox
             };
 
-            noteRichTextBox.ContextMenu.Items.Insert(cmdIndex, ignoreAllMenuItem);
+            addToDictionaryMenuItem.Click += delegate
+            {
+                AddToDictionary(selection.Text);
+            };
+
+            noteRichTextBox.ContextMenu.Items.Insert(i, addToDictionaryMenuItem);
+        }
+
+        public void AddToDictionary(string entry)
+        {
+            // XXX: Use AppendAllText instead?
+            using (var dictionary = new StreamWriter("Dictionary.txt", true))
+            {
+                dictionary.WriteLine(entry);
+            }
         }
     }
 }

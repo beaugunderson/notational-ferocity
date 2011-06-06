@@ -7,6 +7,7 @@
         xmlns:s="clr-namespace:NotationalFerocity.Properties"
         xmlns:w="clr-namespace:NotationalFerocity.Windows"
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+        xmlns:system="clr-namespace:System;assembly=System"
         Height="350"
         Width="525"
         AllowDrop="True"
@@ -18,7 +19,7 @@
         d:DataContext="{d:DesignInstance w:MainWindow}" Closed="InteropWindow_Closed">
     <Window.Style>
         <Style TargetType="{x:Type Window}">
-            <Setter Property="Title" Value="{Binding Path=CurrentNote.FileNameWithoutExtension, StringFormat=Notational Ferocity - \{0\}}" />
+            <Setter Property="Title" Value="{Binding Path=CurrentNote.FileNameWithoutExtension, StringFormat='Notational Ferocity - {0}'}" />
 
             <Style.Triggers>
                 <DataTrigger Binding="{Binding Path=CurrentNote}" Value="{x:Null}">
@@ -61,7 +62,11 @@
         <l:NoteRichTextBox Grid.Column="2" Margin="0,12,12,12" x:Name="noteRichTextBox"
                 SpellCheck.IsEnabled="True"
                 ContextMenuOpening="noteRichTextBox_ContextMenuOpening"
-                TextChanged="noteRichTextBox_TextChanged">
+                TextChanged="noteRichTextBox_TextChanged" VerticalScrollBarVisibility="Auto">
+            <SpellCheck.CustomDictionaries>
+                <system:Uri>Dictionary.txt</system:Uri>
+            </SpellCheck.CustomDictionaries>
+
             <l:NoteRichTextBox.ContextMenu>
                 <ContextMenu Name="noteContextMenu" />
             </l:NoteRichTextBox.ContextMenu>
