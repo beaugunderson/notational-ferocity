@@ -20,7 +20,7 @@ namespace NotationalFerocity.WPF
         [DllImport("user32.dll")]
         protected static extern bool ModifyMenu(IntPtr hMenu, uint uPosition, uint uFlags, uint uIDNewItem, [Optional]string lpNewItem);
 
-        internal const uint WM_SYSCOMMAND = 0x112;
+        private const uint WM_SYSCOMMAND = 0x112;
 
         internal const uint MF_SEPARATOR = 0x800;
         internal const uint MF_BYPOSITION = 0x400;
@@ -79,7 +79,7 @@ namespace NotationalFerocity.WPF
             return IntPtr.Zero;
         }
 
-        internal virtual bool HandleWndProc(IntPtr wParam)
+        protected virtual bool HandleWndProc(IntPtr wParam)
         {
             throw new NotImplementedException();
         }

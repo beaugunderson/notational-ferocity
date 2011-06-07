@@ -6,7 +6,7 @@ namespace NotationalFerocity.WPF
 {
     public class FontDefinition : TextBlock
     {
-        internal static readonly DependencyProperty[] _properties = new[]
+        private static readonly DependencyProperty[] _properties = new[]
         {
             FontFamilyProperty,
             FontSizeProperty,

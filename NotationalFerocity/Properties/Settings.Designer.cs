@@ -144,5 +144,17 @@ namespace NotationalFerocity.Properties {
                 this["FontMarkdown"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1500")]
+        public int SaveDelay {
+            get {
+                return ((int)(this["SaveDelay"]));
+            }
+            set {
+                this["SaveDelay"] = value;
+            }
+        }
     }
 }

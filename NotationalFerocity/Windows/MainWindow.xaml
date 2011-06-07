@@ -7,16 +7,16 @@
         xmlns:s="clr-namespace:NotationalFerocity.Properties"
         xmlns:w="clr-namespace:NotationalFerocity.Windows"
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
-        xmlns:system="clr-namespace:System;assembly=System"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance w:MainWindow}"
         Height="350"
         Width="525"
         AllowDrop="True"
         Icon="pack://application:,,/Images/MainIcon.ico"
-        mc:Ignorable="d"
-        Loaded="Window_Loaded"
         StateChanged="InteropWindow_StateChanged"
         IsVisibleChanged="InteropWindow_IsVisibleChanged"
-        d:DataContext="{d:DesignInstance w:MainWindow}" Closed="InteropWindow_Closed">
+        Loaded="InteropWindow_Loaded"
+        Closed="InteropWindow_Closed">
     <Window.Style>
         <Style TargetType="{x:Type Window}">
             <Setter Property="Title" Value="{Binding Path=CurrentNote.FileNameWithoutExtension, StringFormat='Notational Ferocity - {0}'}" />
@@ -63,10 +63,6 @@
                 SpellCheck.IsEnabled="True"
                 ContextMenuOpening="noteRichTextBox_ContextMenuOpening"
                 TextChanged="noteRichTextBox_TextChanged" VerticalScrollBarVisibility="Auto">
-            <SpellCheck.CustomDictionaries>
-                <system:Uri>Dictionary.txt</system:Uri>
-            </SpellCheck.CustomDictionaries>
-
             <l:NoteRichTextBox.ContextMenu>
                 <ContextMenu Name="noteContextMenu" />
             </l:NoteRichTextBox.ContextMenu>

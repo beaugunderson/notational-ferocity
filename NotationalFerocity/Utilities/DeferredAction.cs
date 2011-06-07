@@ -8,16 +8,6 @@ namespace NotationalFerocity.Utilities
     {
         private readonly Timer _timer;
 
-        public static DeferredAction Create(Action action)
-        {
-            if (action == null)
-            {
-                throw new ArgumentNullException("action");
-            }
-
-            return new DeferredAction(action);
-        }
-
         private DeferredAction(Action action)
         {
             _timer = new Timer(delegate

@@ -3,7 +3,8 @@ using System.IO;
 using System.Web;
 using System.Windows;
 using System.Windows.Documents;
-using NotationalFerocity.Properties;
+
+using NotationalFerocity.Utilities;
 
 namespace NotationalFerocity.Models
 {
@@ -29,17 +30,18 @@ namespace NotationalFerocity.Models
 
             set
             {
-                var directory = Path.GetDirectoryName(HttpUtility.UrlEncode(FileNameWithoutExtension));
+                var directory = Path.GetDirectoryName(FileSystemInfo.FullName);
 
                 if (directory == null)
                 {
                     throw new ApplicationException(string.Format("Unable to ascertain the directory for note {0}", this));
                 }
 
-                var destination = Path.Combine(directory, HttpUtility.UrlEncode(value + FileSystemInfo.Extension));
+                var destination = Path.Combine(directory,
+                    HttpUtility.UrlPathEncode(value + FileSystemInfo.Extension)).Replace("%20", " ");
 
                 Console.WriteLine("Name changed, renaming file from {0} to {1}",
-                    FileNameWithoutExtension, destination);
+                    FileSystemInfo.FullName, destination);
 
                 File.Move(FileSystemInfo.FullName, destination);
 
@@ -54,17 +56,17 @@ namespace NotationalFerocity.Models
 
         public static Note FromTitle(string title)
         {
-            var destination = Path.Combine(Settings.Default.NotesDirectory, HttpUtility.UrlEncode(title + ".txt"));
+            var destination = Paths.CombineNotesDirectory(title + ".txt");
 
-            var file = File.CreateText(destination);
-
-            file.Close();
+            File.CreateText(destination).Close();
 
             return new Note(new FileInfo(destination));
         }
 
         public void Save()
         {
+            Console.WriteLine("Saving...");
+
             File.WriteAllText(FileSystemInfo.FullName, Text);
         }
 

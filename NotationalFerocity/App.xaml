@@ -3,6 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              StartupUri="Windows\MainWindow.xaml">
     <Application.Resources>
-        <ResourceDictionary Source="Style.xaml" />
+        <ResourceDictionary Source="WPF\Styles\Style.xaml" />
     </Application.Resources>
 </Application>

@@ -20,6 +20,7 @@ namespace NotationalFerocity.WPF
             {
                 return (FontSelection) GetValue(FontSelectionProperty);
             }
+
             set
             {
                 SetValue(FontSelectionProperty, value);

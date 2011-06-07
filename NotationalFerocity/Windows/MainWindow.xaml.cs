@@ -11,11 +11,12 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Forms;
-using NotationalFerocity.Formatting;
+
 using Application = System.Windows.Application;
 using MessageBox = System.Windows.MessageBox;
 using MenuItem = System.Windows.Controls.MenuItem;
 
+using NotationalFerocity.Formatting;
 using NotationalFerocity.Models;
 using NotationalFerocity.Properties;
 using NotationalFerocity.Utilities;
@@ -28,23 +29,23 @@ namespace NotationalFerocity.Windows
     /// </summary>
     public partial class MainWindow
     {
-        private DeferredAction _deferredAction;
+        private TimeoutDeferredAction _saveAction;
         private WindowState _storedWindowState;
 
-        private readonly TimeSpan _saveDelay = TimeSpan.FromMilliseconds(1500);
         private readonly NotifyIcon _notifyIcon;
 
-        public ObservableCollection<Note> Notes { get; private set; }
-        public StringCollection Extensions { get; private set; }
-        public FileSystemWatcher NoteWatcher { get; private set; }
+        public ObservableCollection<Note> Notes { get; set; }
 
-        protected bool LoadingText { get; set; }
+        public StringCollection Extensions { get; set; }
+        public FileSystemWatcher NoteWatcher { get; set; }
+
+        private bool LoadingText { get; set; }
 
         private const uint SettingsMenuId = 1000;
         private const uint AboutMenuId = 1001;
         private const uint MonospacedId = 1002;
 
-        internal override bool HandleWndProc(IntPtr wParam)
+        protected override bool HandleWndProc(IntPtr wParam)
         {
             // Execute the appropriate code for the System Menu item that was clicked
             switch (Convert.ToUInt32(wParam.ToInt32()))
@@ -133,22 +134,23 @@ namespace NotationalFerocity.Windows
                 }
 
                 NoteWatcher = new FileSystemWatcher(Settings.Default.NotesDirectory);
+
+                NoteWatcher.Renamed += NoteWatcher_Renamed;
+   
+                NoteWatcher.Created += NoteWatcher_Modified;
+                NoteWatcher.Deleted += NoteWatcher_Modified;
+   
+                NoteWatcher.IncludeSubdirectories = true;
+                NoteWatcher.EnableRaisingEvents = true;
             }
             catch (Exception e)
             {
                 MessageBox.Show(string.Format("There was an error loading your saved settings: {0}", e.Message), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
                 Application.Current.Shutdown();
+
+                return;
             }
-
-            NoteWatcher.Renamed += NoteWatcher_Renamed;
-
-            NoteWatcher.Created += NoteWatcher_Modified;
-            NoteWatcher.Deleted += NoteWatcher_Modified;
-
-            NoteWatcher.IncludeSubdirectories = true;
-            NoteWatcher.EnableRaisingEvents = false;
-
 
             var iconInfo = Application.GetResourceStream(new Uri(@"pack://application:,,/Images/MainIcon.ico"));
 
@@ -162,13 +164,15 @@ namespace NotationalFerocity.Windows
                 _notifyIcon = new NotifyIcon
                 {
                     BalloonTipText = "Notational Ferocity has been minimized. Click the tray icon to show it.",
-                    BalloonTipTitle = "Notational Ferocity",
-                    Text = "Notational Ferocity",
+                    BalloonTipTitle = Properties.Resources.Application_Title,
+                    Text = Properties.Resources.Application_Title,
                     Icon = new Icon(iconInfo.Stream)
                 };
 
                 _notifyIcon.Click += notifyIcon_Click;
             }
+
+            noteRichTextBox.SpellCheck.CustomDictionaries.Add(new Uri(Paths.CombineBaseDirectory("Dictionary.txt"), UriKind.Absolute));
 
             DataContext = this;
         }
@@ -199,19 +203,21 @@ namespace NotationalFerocity.Windows
             InvokeIfNeeded(RefreshNotes);
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        private void InteropWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            uint i = 5;
+
             // Create our new System Menu items just before the Close menu item
-            InsertMenu(SystemMenuHandle, 5, MF_BYPOSITION | MF_SEPARATOR, 0, string.Empty);
+            InsertMenu(SystemMenuHandle, i++, MF_BYPOSITION | MF_SEPARATOR, 0, string.Empty);
 
-            InsertMenu(SystemMenuHandle, 6, MF_BYPOSITION, SettingsMenuId, "&Settings...");
-            InsertMenu(SystemMenuHandle, 7, MF_BYPOSITION, AboutMenuId, "&About...");
+            InsertMenu(SystemMenuHandle, i++, MF_BYPOSITION, SettingsMenuId, "&Settings...");
+            InsertMenu(SystemMenuHandle, i++, MF_BYPOSITION, AboutMenuId, "&About...");
+            
+            InsertMenu(SystemMenuHandle, i++, MF_BYPOSITION | MF_SEPARATOR, 0, string.Empty);
 
-            InsertMenu(SystemMenuHandle, 8, MF_BYPOSITION | MF_SEPARATOR, 0, string.Empty);
+            InsertMenu(SystemMenuHandle, i, MF_BYPOSITION, MonospacedId, "Use &monospaced font");
 
-            InsertMenu(SystemMenuHandle, 9, MF_BYPOSITION, MonospacedId, "Use &monospaced font");
-
-            RefreshNotes();
+            RefreshNotes(); 
         }
 
         private ListCollectionView GetView()
@@ -244,8 +250,6 @@ namespace NotationalFerocity.Windows
                     .Where(file => !file.Attributes.HasFlag(FileAttributes.Directory))
                     .Where(file => Extensions.Contains(file.Extension.ToLower())))
                 {
-                    Console.WriteLine(file.FullName);
-
                     yield return file;
                 }
             }
@@ -295,8 +299,12 @@ namespace NotationalFerocity.Windows
                 return;
             }
 
+            // XXX: Binding?
             CurrentNote = (Note)e.AddedItems[0];
 
+            _saveAction = new TimeoutDeferredAction(CurrentNote.Save, 5000);
+
+            // XXX: Binding?
             UpdateText();
         }
 
@@ -323,27 +331,6 @@ namespace NotationalFerocity.Windows
         }
 
         /// <summary>
-        /// Only save once the user has stopped typing.
-        /// </summary>
-        private void noteRichTextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (LoadingText)
-            {
-                return;
-            }
-
-            // TODO: Make this use binding instead?
-            CurrentNote.Text = noteRichTextBox.GetText();
-
-            if (_deferredAction == null)
-            {
-                _deferredAction = DeferredAction.Create(CurrentNote.Save);
-            }
-
-            _deferredAction.Defer(_saveDelay);
-        }
-
-        /// <summary>
         /// Focus an existing note or create a new note when the user hits enter.
         /// </summary>
         private void searchTextBox_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
@@ -362,6 +349,24 @@ namespace NotationalFerocity.Windows
             }
 
             AddNote(Note.FromTitle(searchTextBox.Text));
+
+            searchTextBox.Clear();
+        }
+
+        /// <summary>
+        /// Only save once the user has stopped typing.
+        /// </summary>
+        private void noteRichTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (LoadingText)
+            {
+                return;
+            }
+
+            // TODO: Make this use binding instead?
+            CurrentNote.Text = noteRichTextBox.GetText();
+
+            _saveAction.Defer(Settings.Default.SaveDelay);
         }
 
         private void Textile_Click(object sender, RoutedEventArgs e)
@@ -380,7 +385,7 @@ namespace NotationalFerocity.Windows
 
         private void Rename_Click(object sender, RoutedEventArgs e)
         {
-
+            // TODO: Can this use the Command framework?
         }
 
         private void InteropWindow_StateChanged(object sender, EventArgs e)
@@ -408,19 +413,19 @@ namespace NotationalFerocity.Windows
             }
         }
 
-        void notifyIcon_Click(object sender, EventArgs e)
-        {
-            WindowState = _storedWindowState;
-
-            Show();
-        }
-
         private void InteropWindow_Closed(object sender, EventArgs eventArgs)
         {
             if (_notifyIcon != null)
             {
                 _notifyIcon.Dispose();
             }
+        }
+
+        void notifyIcon_Click(object sender, EventArgs e)
+        {
+            WindowState = _storedWindowState;
+
+            Show();
         }
 
         /// <summary>
@@ -471,7 +476,8 @@ namespace NotationalFerocity.Windows
                 var mi = new MenuItem
                 {
                     Header = suggestion,
-                    FontWeight = FontWeights.Bold,
+                    //FontWeight = FontWeights.Bold,
+                    FontStyle = FontStyles.Italic,
                     Command = EditingCommands.CorrectSpellingError,
                     CommandParameter = suggestion,
                     CommandTarget = noteRichTextBox
@@ -509,7 +515,7 @@ namespace NotationalFerocity.Windows
             noteRichTextBox.ContextMenu.Items.Insert(i, addToDictionaryMenuItem);
         }
 
-        public void AddToDictionary(string entry)
+        private static void AddToDictionary(string entry)
         {
             // XXX: Use AppendAllText instead?
             using (var dictionary = new StreamWriter("Dictionary.txt", true))
