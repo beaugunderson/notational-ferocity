@@ -55,47 +55,9 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="150" />
-            <ColumnDefinition Width="5" />
+            <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="350*" />
         </Grid.ColumnDefinitions>
-
-        <l:NoteRichTextBox Grid.Column="2" Margin="0,12,12,12" x:Name="noteRichTextBox"
-                SpellCheck.IsEnabled="True"
-                ContextMenuOpening="noteRichTextBox_ContextMenuOpening"
-                TextChanged="noteRichTextBox_TextChanged" VerticalScrollBarVisibility="Auto">
-            <l:NoteRichTextBox.ContextMenu>
-                <ContextMenu Name="noteContextMenu" />
-            </l:NoteRichTextBox.ContextMenu>
-            
-            <l:NoteRichTextBox.Style>
-                <Style TargetType="{x:Type l:NoteRichTextBox}">
-                    <Setter Property="Foreground" Value="{Binding Source={x:Static s:Settings.Default}, Path=ColorForeground}" />
-                    <Setter Property="Background" Value="{Binding Source={x:Static s:Settings.Default}, Path=ColorBackground}" />
-
-                    <Setter Property="FontFamily" Value="{Binding Source={x:Static s:Settings.Default}, Path=FontProportional.FontFamily}" />
-                    <Setter Property="FontSize" Value="{Binding Source={x:Static s:Settings.Default}, Path=FontProportional.FontSize}" />
-                    <Setter Property="FontStretch" Value="{Binding Source={x:Static s:Settings.Default}, Path=FontProportional.FontStretch}" />
-                    <Setter Property="FontWeight" Value="{Binding Source={x:Static s:Settings.Default}, Path=FontProportional.FontWeight}" />
-                    <Setter Property="FontStyle" Value="{Binding Source={x:Static s:Settings.Default}, Path=FontProportional.FontStyle}" />
-
-                    <Setter Property="IsEnabled" Value="true" />
-                    
-                    <Style.Triggers>
-                        <Trigger Property="FontSelection" Value="Monospaced">
-                            <Setter Property="FontFamily" Value="{Binding Source={x:Static s:Settings.Default}, Path=FontMonospaced.FontFamily}" />
-                            <Setter Property="FontSize" Value="{Binding Source={x:Static s:Settings.Default}, Path=FontMonospaced.FontSize}" />
-                            <Setter Property="FontStretch" Value="{Binding Source={x:Static s:Settings.Default}, Path=FontMonospaced.FontStretch}" />
-                            <Setter Property="FontWeight" Value="{Binding Source={x:Static s:Settings.Default}, Path=FontMonospaced.FontWeight}" />
-                            <Setter Property="FontStyle" Value="{Binding Source={x:Static s:Settings.Default}, Path=FontMonospaced.FontStyle}" />
-                        </Trigger>
-                        
-                        <DataTrigger Binding="{Binding Path=CurrentNote}" Value="{x:Null}">
-                            <Setter Property="IsEnabled" Value="false" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </l:NoteRichTextBox.Style>
-        </l:NoteRichTextBox>
 
         <TextBox Height="23" Margin="12,12,0,0" Name="searchTextBox" VerticalAlignment="Top" TextChanged="searchTextBox_TextChanged" KeyDown="searchTextBox_KeyDown" />
 
@@ -113,6 +75,44 @@
             </ListView.ItemTemplate>
         </ListView>
 
-        <GridSplitter Grid.Column="1" HorizontalAlignment="Left" Margin="0,12" Name="notesGridSplitter" Width="5" />
+        <GridSplitter Grid.Column="1" HorizontalAlignment="Center" Margin="0,12" Width="6" />
+
+        <l:NoteRichTextBox Grid.Column="2" Margin="0,12,12,12" x:Name="noteRichTextBox"
+                SpellCheck.IsEnabled="True"
+                ContextMenuOpening="noteRichTextBox_ContextMenuOpening"
+                TextChanged="noteRichTextBox_TextChanged" VerticalScrollBarVisibility="Auto">
+            <l:NoteRichTextBox.ContextMenu>
+                <ContextMenu Name="noteContextMenu" />
+            </l:NoteRichTextBox.ContextMenu>
+
+            <l:NoteRichTextBox.Style>
+                <Style TargetType="{x:Type l:NoteRichTextBox}">
+                    <Setter Property="Foreground" Value="{Binding Source={x:Static s:Settings.Default}, Path=ColorForeground}" />
+                    <Setter Property="Background" Value="{Binding Source={x:Static s:Settings.Default}, Path=ColorBackground}" />
+
+                    <Setter Property="FontFamily" Value="{Binding Source={x:Static s:Settings.Default}, Path=FontProportional.FontFamily}" />
+                    <Setter Property="FontSize" Value="{Binding Source={x:Static s:Settings.Default}, Path=FontProportional.FontSize}" />
+                    <Setter Property="FontStretch" Value="{Binding Source={x:Static s:Settings.Default}, Path=FontProportional.FontStretch}" />
+                    <Setter Property="FontWeight" Value="{Binding Source={x:Static s:Settings.Default}, Path=FontProportional.FontWeight}" />
+                    <Setter Property="FontStyle" Value="{Binding Source={x:Static s:Settings.Default}, Path=FontProportional.FontStyle}" />
+
+                    <Setter Property="IsEnabled" Value="true" />
+
+                    <Style.Triggers>
+                        <Trigger Property="FontSelection" Value="Monospaced">
+                            <Setter Property="FontFamily" Value="{Binding Source={x:Static s:Settings.Default}, Path=FontMonospaced.FontFamily}" />
+                            <Setter Property="FontSize" Value="{Binding Source={x:Static s:Settings.Default}, Path=FontMonospaced.FontSize}" />
+                            <Setter Property="FontStretch" Value="{Binding Source={x:Static s:Settings.Default}, Path=FontMonospaced.FontStretch}" />
+                            <Setter Property="FontWeight" Value="{Binding Source={x:Static s:Settings.Default}, Path=FontMonospaced.FontWeight}" />
+                            <Setter Property="FontStyle" Value="{Binding Source={x:Static s:Settings.Default}, Path=FontMonospaced.FontStyle}" />
+                        </Trigger>
+
+                        <DataTrigger Binding="{Binding Path=CurrentNote}" Value="{x:Null}">
+                            <Setter Property="IsEnabled" Value="false" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </l:NoteRichTextBox.Style>
+        </l:NoteRichTextBox>
     </Grid>
 </l:InteropWindow>

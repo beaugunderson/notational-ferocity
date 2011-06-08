@@ -294,7 +294,7 @@
           <Grid>
             <Border Name="Border" BorderBrush="{TemplateBinding Control.BorderBrush}" BorderThickness="{TemplateBinding Control.BorderThickness}"></Border>
             <ScrollViewer Margin="1" Focusable="False" Background="{TemplateBinding Control.Background}">
-              <StackPanel Margin="2" IsItemsHost="True"></StackPanel>
+              <StackPanel Margin="1" IsItemsHost="True"></StackPanel>
             </ScrollViewer>
           </Grid>
           <ControlTemplate.Triggers>

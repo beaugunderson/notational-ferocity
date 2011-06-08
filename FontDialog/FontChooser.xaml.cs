@@ -154,7 +154,7 @@ namespace FontDialog
         {
             base.OnInitialized(e);
 
-            _previewSampleText = _defaultSampleText = previewTextBox.Text;
+            _previewSampleText = _defaultSampleText = new TextRange(previewTextBox.Document.ContentStart, previewTextBox.Document.ContentEnd).Text;
             _pointsText = typefaceNameRun.Text;
 
             // Hook up events for the font family list and associated text box.
@@ -468,7 +468,7 @@ namespace FontDialog
                 _previewSampleText = newValue;
 
                 // Update the preview text box.
-                previewTextBox.Text = newValue;
+                previewTextBox.Document = new FlowDocument(new Paragraph(new Run(newValue)));
 
                 // The preview sample text is also used in the family and typeface samples tab.
                 InvalidateTab(samplesTab);
@@ -1695,12 +1695,13 @@ namespace FontDialog
 
                 fontDescriptionBox.Document = new FlowDocument(table);
 
-                fontLicenseBox.Text = NameDictionaryHelper.GetDisplayName(glyphTypeface.LicenseDescriptions);
+                fontLicenseBox.Document = new FlowDocument(new Paragraph(new Run(NameDictionaryHelper.GetDisplayName(glyphTypeface.LicenseDescriptions))));
             }
             else
             {
                 fontDescriptionBox.Document = new FlowDocument();
-                fontLicenseBox.Text = String.Empty;
+
+                fontLicenseBox.Document = new FlowDocument();
             }
         }
 
