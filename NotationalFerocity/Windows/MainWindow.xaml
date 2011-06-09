@@ -75,7 +75,7 @@
             </ListView.ItemTemplate>
         </ListView>
 
-        <GridSplitter Grid.Column="1" HorizontalAlignment="Center" Margin="0,12" Width="6" />
+        <GridSplitter Grid.Column="1" HorizontalAlignment="Center" Margin="0,12" Width="6" IsTabStop="False" />
 
         <l:NoteRichTextBox Grid.Column="2" Margin="0,12,12,12" x:Name="noteRichTextBox"
                 SpellCheck.IsEnabled="True"
