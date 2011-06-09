@@ -61,7 +61,7 @@
 
         <TextBox Height="23" Margin="12,12,0,0" Name="searchTextBox" VerticalAlignment="Top" TextChanged="searchTextBox_TextChanged" KeyDown="searchTextBox_KeyDown" />
 
-        <ListView Margin="12,41,0,12" Name="notesListView" Background="WhiteSmoke" ItemsSource="{Binding Path=Notes}" SelectionChanged="notesListBox_SelectionChanged" SelectedItem="{Binding Path=CurrentNote, Mode=TwoWay}">
+        <ListView Margin="12,41,0,12" Name="notesListView" Background="WhiteSmoke" ItemsSource="{Binding Path=Notes}" SelectionChanged="notesListView_SelectionChanged" SelectedItem="{Binding Path=CurrentNote, Mode=TwoWay}">
             <ListView.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="_Rename" Click="Rename_Click" />
@@ -70,7 +70,7 @@
 
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <l:EditBox Height="20" Value="{Binding Path=FileNameWithoutExtension, Mode=TwoWay}" Focusable="False" />
+                    <l:EditBox x:Name="editBox" Height="20" Value="{Binding Path=FileNameWithoutExtension, Mode=TwoWay}" Focusable="False" />
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>

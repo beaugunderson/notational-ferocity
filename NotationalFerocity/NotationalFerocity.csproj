@@ -99,6 +99,7 @@
     <Compile Include="WPF\ClickLabel.cs" />
     <Compile Include="WPF\FontSelection.cs" />
     <Compile Include="WPF\FullScreenBehavior.cs" />
+    <Compile Include="WPF\Helpers.cs" />
     <Compile Include="WPF\IconHelper.cs" />
     <Compile Include="WPF\NoteRichTextBox.cs" />
     <Compile Include="WPF\FontDefinition.cs" />

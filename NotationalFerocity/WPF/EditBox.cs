@@ -4,7 +4,6 @@ using System.Windows.Input;
 using System.Windows;
 using System.Diagnostics;
 using System.Windows.Documents;
-using System.Windows.Media;
 
 namespace NotationalFerocity.WPF
 {
@@ -21,23 +20,23 @@ namespace NotationalFerocity.WPF
     {
         private EditBoxAdorner _adorner;
         
-        //A TextBox in the visual tree
+        // A TextBox in the visual tree
         private FrameworkElement _textBox;
         
-        //Specifies whether an EditBox can switch to editing mode. 
-        //Set to true if the ListViewItem that contains the EditBox is 
-        //selected, when the mouse pointer moves over the EditBox
+        // Specifies whether an EditBox can switch to editing mode. 
+        // Set to true if the ListViewItem that contains the EditBox is 
+        // selected, when the mouse pointer moves over the EditBox
         private bool _canBeEdited;
         
-        //Specifies whether an EditBox can switch to editing mode.
-        //Set to true when the ListViewItem that contains the EditBox is 
-        //selected when the mouse pointer moves over the EditBox.
+        // Specifies whether an EditBox can switch to editing mode.
+        // Set to true when the ListViewItem that contains the EditBox is 
+        // selected when the mouse pointer moves over the EditBox.
         private bool _isMouseWithinScope;
         
-        //The ListView control that contains the EditBox
+        // The ListView control that contains the EditBox
         private ItemsControl _itemsControl;
         
-        //The ListViewItem control that contains the EditBox
+        // The ListViewItem control that contains the EditBox
         private ListViewItem _listViewItem;
         
         /// <summary>
@@ -70,16 +69,26 @@ namespace NotationalFerocity.WPF
             _textBox.KeyDown += OnTextBoxKeyDown;
             _textBox.LostKeyboardFocus += OnTextBoxLostKeyboardFocus;
 
-            //Receive notification of the event to handle the column resize.
+            _textBox.LostFocus += OnTextBoxLostFocus;
+
+            // Receive notification of the event to handle the column resize.
             HookTemplateParentResizeEvent();
 
-            //Capture the resize event to  handle ListView resize cases.
+            // Capture the resize event to  handle ListView resize cases.
             HookItemsControlEvents();
 
-            _listViewItem = GetDependencyObjectFromVisualTree(this,
+            _listViewItem = Helpers.GetDependencyObjectFromVisualTree(this,
                 typeof (ListViewItem)) as ListViewItem;
 
             Debug.Assert(_listViewItem != null, "No ListViewItem found");
+        }
+
+        private void OnTextBoxLostFocus(object sender, RoutedEventArgs e)
+        {
+            if (IsEditing)
+            {
+                IsEditing = false;
+            }
         }
 
         /// <summary>
@@ -199,7 +208,7 @@ namespace NotationalFerocity.WPF
                 return (bool)GetValue(IsEditingProperty);
             }
 
-            private set
+            set
             {
                 SetValue(IsEditingProperty, value);
 
@@ -269,7 +278,7 @@ namespace NotationalFerocity.WPF
         /// </summary>
         private void HookItemsControlEvents()
         {
-            _itemsControl = GetDependencyObjectFromVisualTree(this,
+            _itemsControl = Helpers.GetDependencyObjectFromVisualTree(this,
                  typeof (ItemsControl)) as ItemsControl;
             
             if (_itemsControl == null)
@@ -284,8 +293,8 @@ namespace NotationalFerocity.WPF
             _itemsControl.AddHandler(ScrollViewer.ScrollChangedEvent,
                 new RoutedEventHandler(OnScrollViewerChanged));
 
-            //_itemsControl.AddHandler(MouseWheelEvent,
-            //    new RoutedEventHandler(OnCouldSwitchToNormalMode), true);
+            _itemsControl.AddHandler(MouseWheelEvent,
+                new RoutedEventHandler(OnCouldSwitchToNormalMode), true);
         }
 
         /// <summary>
@@ -302,29 +311,6 @@ namespace NotationalFerocity.WPF
         }
 
         /// <summary>
-        /// Walk visual tree to find the first DependencyObject 
-        /// of the specific type.
-        /// </summary>
-        private DependencyObject GetDependencyObjectFromVisualTree(DependencyObject startObject, Type type)
-        {
-            // Walk the visual tree to get the parent(ItemsControl) 
-            // of this control
-            var parent = startObject;
-
-            while (parent != null)
-            {
-                if (type.IsInstanceOfType(parent))
-                {
-                    break;
-                }
-
-                parent = VisualTreeHelper.GetParent(parent);
-            }
-
-            return parent;
-        }
-
-        /// <summary>
         /// When the size of the column containing the EditBox changes
         /// and the EditBox is in editing mode, switch the mode to normal mode 
         /// </summary>
@@ -334,7 +320,7 @@ namespace NotationalFerocity.WPF
 
             if (parent != null)
             {
-                // parent.SizeChanged += OnCouldSwitchToNormalMode;
+                parent.SizeChanged += OnCouldSwitchToNormalMode;
             }
         }
     }

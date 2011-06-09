@@ -10,8 +10,8 @@ namespace NotationalFerocity.WPF
     /// <summary>
     /// An adorner class that contains a TextBox to provide editing capability 
     /// for an EditBox control. The editable TextBox resides in the 
-    /// AdornerLayer. When the EditBox is in editing mode, the TextBox is given a size 
-    /// it with desired size; otherwise, arrange it with size(0,0,0,0).
+    /// AdornerLayer. When the EditBox is in editing mode, the TextBox is given
+    /// the desired size; otherwise, arrange it with size(0,0,0,0).
     /// </summary>
     internal sealed class EditBoxAdorner : Adorner
     {
@@ -61,14 +61,14 @@ namespace NotationalFerocity.WPF
         protected override Size MeasureOverride(Size constraint)
         {
             _textBox.IsEnabled = _isVisible;
-            //if in editing mode, measure the space the adorner element 
-            //should cover.
 
             if (!_isVisible)
             {
                 return new Size(0, 0);
             }
             
+            // If in editing mode, measure the space the adorner element 
+            // should cover.
             AdornedElement.Measure(constraint);
             _textBox.Measure(constraint);
 
@@ -80,7 +80,7 @@ namespace NotationalFerocity.WPF
         }
 
         /// <summary>
-        /// override function to arrange elements.
+        /// Override function to arrange elements.
         /// </summary>
         protected override Size ArrangeOverride(Size finalSize)
         {
@@ -109,7 +109,7 @@ namespace NotationalFerocity.WPF
         }
 
         /// <summary>
-        /// Override function to return infomation about visual tree.
+        /// Override function to return infomation about the visual tree.
         /// </summary>
         protected override Visual GetVisualChild(int index)
         {
@@ -117,14 +117,14 @@ namespace NotationalFerocity.WPF
         }
 
         /// <summary>
-        /// Inialize necessary properties and hook necessary events on TextBox, 
-        /// then add it into tree.
+        /// Initialize necessary properties and hook necessary events on TextBox, 
+        /// then add it into the tree.
         /// </summary>
         private void BuildTextBox()
         {
             _visualChildren.Add(_textBox);
 
-            //Bind Text onto AdornedElement.
+            // Bind Text onto AdornedElement.
             var binding = new Binding("Text")
             {
                 Mode = BindingMode.TwoWay,

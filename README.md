@@ -18,7 +18,6 @@ Features
 TODO
 ----
 
-- Performance improvements while typing into the editor
 - Simplenote sync?
 - Nice styling
 - Keyboard shortcuts
@@ -30,3 +29,4 @@ Used libraries
 - [Textile.NET](http://textilenet.codeplex.com/) by Ludovic Chabant
 - [AlphanumComparator](http://www.davekoelle.com/alphanum.html) by Dominik Hurnaus (based on the Alphanum Algorithm by Dave Koelle)
 - [Extended WPF Toolkit](http://wpftoolkit.codeplex.com/) by Brian Lagunas
+- [NLog](http://nlog-project.org/) by Jaroslaw Kowalski

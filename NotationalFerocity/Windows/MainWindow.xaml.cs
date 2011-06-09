@@ -11,16 +11,19 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Forms;
+using System.Windows.Threading;
 
 using Application = System.Windows.Application;
 using MessageBox = System.Windows.MessageBox;
 using MenuItem = System.Windows.Controls.MenuItem;
+using ListViewItem = System.Windows.Controls.ListViewItem;
 
 using NotationalFerocity.Formatting;
 using NotationalFerocity.Models;
 using NotationalFerocity.Properties;
 using NotationalFerocity.Utilities;
 using NotationalFerocity.WPF;
+using ListView = System.Windows.Controls.ListView;
 
 namespace NotationalFerocity.Windows
 {
@@ -44,6 +47,8 @@ namespace NotationalFerocity.Windows
         private const uint SettingsMenuId = 1000;
         private const uint AboutMenuId = 1001;
         private const uint MonospacedId = 1002;
+
+        private bool _isDirty;
 
         protected override bool HandleWndProc(IntPtr wParam)
         {
@@ -193,7 +198,14 @@ namespace NotationalFerocity.Windows
         {
             Console.WriteLine("File renamed: {0} -> {1}", e.OldName, e.Name);
 
-            InvokeIfNeeded(RefreshNotes);
+            if (IsEditing)
+            {
+                _isDirty = true;
+            }
+            else
+            {
+                InvokeIfNeeded(RefreshNotes);
+            }
         }
 
         void NoteWatcher_Modified(object sender, FileSystemEventArgs e)
@@ -201,6 +213,70 @@ namespace NotationalFerocity.Windows
             Console.WriteLine("File {1}: {0}", e.Name, e.ChangeType.ToString().ToLower());
 
             InvokeIfNeeded(RefreshNotes);
+        }
+
+        public bool IsEditing
+        {
+            get
+            {
+                // XXX: Where does the access check belong?
+                if (notesListView.CheckAccess())
+                {
+                    return _isEditing();
+                }
+
+                bool isEditing = false;
+
+                notesListView.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() => {
+                    isEditing = _isEditing();
+                }));
+
+                return isEditing;
+            }
+
+            set
+            {
+                // XXX: This is a temporary hack.
+                if (value == false)
+                {
+                    _clearEditing();
+                }
+            }
+        }
+
+        private void _clearEditing()
+        {
+            foreach (var item in notesListView.Items)
+            {
+                var editBox = EditBoxFromListViewItem(notesListView, item);
+
+                if (editBox != null)
+                {
+                    editBox.IsEditing = false;
+                }
+            }
+        }
+
+        private static EditBox EditBoxFromListViewItem(ListView listView, object item)
+        {
+            var listViewItem = (ListViewItem)listView.ItemContainerGenerator.ContainerFromItem(item);
+            
+            return Helpers.FindByName("editBox", listViewItem) as EditBox;
+        }
+
+        bool _isEditing()
+        {
+            foreach (var item in notesListView.Items)
+            {
+                var editBox = EditBoxFromListViewItem(notesListView, item);
+
+                if (editBox != null && editBox.IsEditing)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private void InteropWindow_Loaded(object sender, RoutedEventArgs e)
@@ -292,12 +368,15 @@ namespace NotationalFerocity.Windows
                 (item as Note).ToString().ToLower().Contains(searchTextBox.Text.ToLower());
         }
 
-        private void notesListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void notesListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (e.AddedItems.Count != 1)
             {
                 return;
             }
+
+            // XXX: Temporary
+            IsEditing = false;
 
             // XXX: Binding?
             CurrentNote = (Note)e.AddedItems[0];
@@ -385,7 +464,12 @@ namespace NotationalFerocity.Windows
 
         private void Rename_Click(object sender, RoutedEventArgs e)
         {
-            // TODO: Can this use the Command framework?
+            var editBox = EditBoxFromListViewItem(notesListView, notesListView.SelectedItem);
+
+            if (editBox != null)
+            {
+                editBox.IsEditing = true;
+            }
         }
 
         private void InteropWindow_StateChanged(object sender, EventArgs e)

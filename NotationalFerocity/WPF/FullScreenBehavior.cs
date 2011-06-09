@@ -14,6 +14,11 @@ namespace NotationalFerocity.WPF
     {
         private HwndSource hwndSource;
 
+        const int WM_SYSCOMMAND = 0x112;
+
+        const int SC_RESTORE = 0xF120;
+        const int SC_MAXIMIZE = 0xF030;
+
         /// <summary>
         /// Dependency property for the <see cref="FullScreenOnMaximize"/> property.
         /// </summary>
@@ -328,10 +333,5 @@ namespace NotationalFerocity.WPF
                 }
             }
         }
-
-        const int WM_SYSCOMMAND = 0x112;
-
-        const int SC_RESTORE = 0xF120;
-        const int SC_MAXIMIZE = 0xF030;
     }
 }
