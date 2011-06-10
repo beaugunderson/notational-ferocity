@@ -16,6 +16,7 @@ using System.Windows.Threading;
 using Application = System.Windows.Application;
 using MessageBox = System.Windows.MessageBox;
 using MenuItem = System.Windows.Controls.MenuItem;
+using ListView = System.Windows.Controls.ListView;
 using ListViewItem = System.Windows.Controls.ListViewItem;
 
 using NotationalFerocity.Formatting;
@@ -23,7 +24,6 @@ using NotationalFerocity.Models;
 using NotationalFerocity.Properties;
 using NotationalFerocity.Utilities;
 using NotationalFerocity.WPF;
-using ListView = System.Windows.Controls.ListView;
 
 namespace NotationalFerocity.Windows
 {

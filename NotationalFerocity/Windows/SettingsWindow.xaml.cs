@@ -85,7 +85,7 @@ namespace NotationalFerocity.Windows
             var folder = new FolderBrowserDialog
             {
                 ShowNewFolderButton = true,
-                RootFolder = Environment.SpecialFolder.MyDocuments
+                RootFolder = Environment.SpecialFolder.Desktop
             };
             
             var result = folder.ShowDialog();
