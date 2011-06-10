@@ -9,6 +9,7 @@
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance w:MainWindow}"
+        Background="{x:Static SystemColors.ControlBrush}"
         Height="350"
         Width="525"
         AllowDrop="True"
@@ -34,7 +35,7 @@
             <Setter Property="Margin" Value="0"/>
         </Style>
 
-        <Style x:Key="{x:Type l:EditBox}" TargetType="{x:Type l:EditBox}" >
+        <Style x:Key="{x:Type l:EditBox}" TargetType="{x:Type l:EditBox}">
             <Setter Property="HorizontalAlignment" Value="Left"  />
             <Setter Property="Template">
                 <Setter.Value>
@@ -86,7 +87,8 @@
             </l:NoteRichTextBox.ContextMenu>
 
             <l:NoteRichTextBox.Style>
-                <Style TargetType="{x:Type l:NoteRichTextBox}">
+                <Style TargetType="{x:Type l:NoteRichTextBox}"
+                       BasedOn="{StaticResource {x:Type RichTextBox}}">
                     <Setter Property="Foreground" Value="{Binding Source={x:Static s:Settings.Default}, Path=ColorForeground}" />
                     <Setter Property="Background" Value="{Binding Source={x:Static s:Settings.Default}, Path=ColorBackground}" />
 

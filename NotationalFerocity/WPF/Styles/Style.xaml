@@ -25,13 +25,13 @@
     <GradientStop Color="#FFFFE394" Offset="0.75"/>
   </LinearGradientBrush>
   <LinearGradientBrush x:Key="PressedBrush" EndPoint="0.5,0.974" StartPoint="0.5,0.031">
-  	<GradientStop Color="#FFFFBC67" Offset="0"/>
-  	<GradientStop Color="#FFFFD6A3" Offset="1"/>
-  	<GradientStop Color="#FFFFAB41" Offset="0.332"/>
-  	<GradientStop Color="#FFFD9E3F" Offset="0.341"/>
-  	<GradientStop Color="#FFFD9E3F" Offset="0.349"/>
-  	<GradientStop Color="#FFFB9143" Offset="0.358"/>
-  	<GradientStop Color="#FFFECB95" Offset="0.75"/>
+    <GradientStop Color="#FFFFBC67" Offset="0"/>
+    <GradientStop Color="#FFFFD6A3" Offset="1"/>
+    <GradientStop Color="#FFFFAB41" Offset="0.332"/>
+    <GradientStop Color="#FFFD9E3F" Offset="0.341"/>
+    <GradientStop Color="#FFFD9E3F" Offset="0.349"/>
+    <GradientStop Color="#FFFB9143" Offset="0.358"/>
+    <GradientStop Color="#FFFECB95" Offset="0.75"/>
   </LinearGradientBrush>
   <SolidColorBrush x:Key="PressedBorderBrush" Color="#FFB29648"/>
   <LinearGradientBrush x:Key="LightBrush" EndPoint="0,1" StartPoint="0,0">
@@ -138,6 +138,7 @@
     <Setter Property="Template" Value="{DynamicResource NuclearButton}"/>
     <Setter Property="Background" Value="{DynamicResource NormalBrushExtSimple}"/>
     <Setter Property="BorderBrush" Value="#FFBBBFC4"/>
+    <Setter Property="BorderThickness" Value="1"/>
   </Style>
   <ControlTemplate x:Key="NuclearButton" TargetType="{x:Type Button}">
     <ControlTemplate.Resources>
@@ -226,7 +227,7 @@
     <Setter Property="ScrollViewer.CanContentScroll" Value="True"/>
     <Setter Property="Template">
       <Setter.Value>
-        <ControlTemplate TargetType="{x:Type ListBox}">
+        <ControlTemplate TargetType="{x:Type ListView}">
           <Grid>
             <Border x:Name="Border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"/>
             <ScrollViewer Margin="1" Focusable="False" Background="{TemplateBinding Background}">
@@ -251,7 +252,7 @@
     <Setter Property="OverridesDefaultStyle" Value="True"/>
     <Setter Property="Template">
       <Setter.Value>
-        <ControlTemplate TargetType="{x:Type ListBoxItem}">
+        <ControlTemplate TargetType="{x:Type ListViewItem}">
           <Grid SnapsToDevicePixels="True" Margin="0">
             <Border x:Name="SelectedBorder" Opacity="0" BorderThickness="1" CornerRadius="2" BorderBrush="{DynamicResource SelectedListItemBorderBrush}">
               <Border BorderBrush="{DynamicResource ListItemSelectedInsiderBorderBrush}" BorderThickness="1" CornerRadius="1" Background="{DynamicResource ListItemSelectedBackgroundBrush}"/>
@@ -447,7 +448,7 @@
                 </LinearGradientBrush>
               </Border.Background>
             </Border>
-            <RepeatButton x:Name="DecreaseRepeat" Style="{DynamicResource NuclearRepeatButton}" Command="ScrollBar.LineUpCommand">
+            <RepeatButton x:Name="DecreaseRepeat" BorderThickness="1" Style="{DynamicResource NuclearRepeatButton}" Command="ScrollBar.LineUpCommand">
               <Grid>
                 <Path x:Name="DecreaseArrow" StrokeThickness="1" Data="M0,4L8,4 4,0z">
                   <Path.Fill>
@@ -467,7 +468,7 @@
                 <RepeatButton x:Name="PageDown" Style="{DynamicResource NuclearScrollRepeatButtonStyle}" Command="ScrollBar.PageUpCommand"/>
               </Track.DecreaseRepeatButton>
             </Track>
-            <RepeatButton x:Name="IncreaseRepeat" Grid.Row="2" Style="{DynamicResource NuclearRepeatButton}" Command="ScrollBar.LineDownCommand">
+            <RepeatButton x:Name="IncreaseRepeat" BorderThickness="1" Grid.Row="2" Style="{DynamicResource NuclearRepeatButton}" Command="ScrollBar.LineDownCommand">
               <Grid>
                 <Path x:Name="IncreaseArrow" StrokeThickness="1" Data="M0,0L4,4 8,0z">
                   <Path.Fill>
@@ -1033,6 +1034,7 @@
     <Setter Property="FocusVisualStyle" Value="{DynamicResource CheckBoxFocusVisual}"/>
     <Setter Property="Background" Value="{DynamicResource CheckBoxBg}"/>
     <Setter Property="BorderBrush" Value="{DynamicResource NormalBorderBrush}"/>
+    <Setter Property="BorderThickness" Value="1"/>
     <Setter Property="Template" Value="{DynamicResource NuclearCheckBox}"/>
   </Style>
   <ControlTemplate x:Key="NuclearCheckBox" TargetType="{x:Type CheckBox}">

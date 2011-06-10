@@ -1,7 +1,10 @@
 ﻿<Window x:Class="NotationalFerocity.Windows.OutputWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Output" Height="451" Width="529" 
+        Title="Output"
+        Height="450"
+        Width="550" 
+        Background="{x:Static SystemColors.ControlBrush}"
         SourceInitialized="Window_SourceInitialized"
         Loaded="Window_Loaded">
     <Grid>
