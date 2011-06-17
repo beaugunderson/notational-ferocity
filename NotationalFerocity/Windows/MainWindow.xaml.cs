@@ -194,7 +194,7 @@ namespace NotationalFerocity.Windows
             }
         }
 
-        void NoteWatcher_Renamed(object sender, RenamedEventArgs e)
+        private void NoteWatcher_Renamed(object sender, RenamedEventArgs e)
         {
             Console.WriteLine("File renamed: {0} -> {1}", e.OldName, e.Name);
 
@@ -208,7 +208,7 @@ namespace NotationalFerocity.Windows
             }
         }
 
-        void NoteWatcher_Modified(object sender, FileSystemEventArgs e)
+        private void NoteWatcher_Modified(object sender, FileSystemEventArgs e)
         {
             Console.WriteLine("File {1}: {0}", e.Name, e.ChangeType.ToString().ToLower());
 
@@ -264,7 +264,7 @@ namespace NotationalFerocity.Windows
             return Helpers.FindByName("editBox", listViewItem) as EditBox;
         }
 
-        bool _isEditing()
+        private bool _isEditing()
         {
             foreach (var item in notesListView.Items)
             {
@@ -505,7 +505,7 @@ namespace NotationalFerocity.Windows
             }
         }
 
-        void notifyIcon_Click(object sender, EventArgs e)
+        private void notifyIcon_Click(object sender, EventArgs e)
         {
             WindowState = _storedWindowState;
 

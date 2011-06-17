@@ -62,7 +62,12 @@
 
         <TextBox Height="23" Margin="12,12,0,0" Name="searchTextBox" VerticalAlignment="Top" TextChanged="searchTextBox_TextChanged" KeyDown="searchTextBox_KeyDown" />
 
-        <ListView Margin="12,41,0,12" Name="notesListView" Background="WhiteSmoke" ItemsSource="{Binding Path=Notes}" SelectionChanged="notesListView_SelectionChanged" SelectedItem="{Binding Path=CurrentNote, Mode=TwoWay}">
+        <ListView Margin="12,41,0,12"
+                  Name="notesListView" 
+                  Background="WhiteSmoke" 
+                  ItemsSource="{Binding Path=Notes}" 
+                  SelectedItem="{Binding Path=CurrentNote, Mode=TwoWay}"
+                  SelectionChanged="notesListView_SelectionChanged">
             <ListView.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="_Rename" Click="Rename_Click" />

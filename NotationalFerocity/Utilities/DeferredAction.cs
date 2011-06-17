@@ -8,7 +8,7 @@ namespace NotationalFerocity.Utilities
     {
         private readonly Timer _timer;
 
-        private DeferredAction(Action action)
+        public DeferredAction(Action action)
         {
             _timer = new Timer(delegate
             {
