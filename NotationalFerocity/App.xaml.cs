@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Threading;
 
 using NLog;
 
@@ -15,7 +16,7 @@ namespace NotationalFerocity
         {
             Logger.Info("Application starting.");
 
-            Current.DispatcherUnhandledException += OnDispatcherUnhandledException;
+            //Current.DispatcherUnhandledException += OnDispatcherUnhandledException;
         }
 
         protected override void OnExit(ExitEventArgs e)
@@ -27,7 +28,7 @@ namespace NotationalFerocity
 
         private bool showingFatal;
 
-        void OnDispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
             e.Handled = true;
 
@@ -40,7 +41,7 @@ namespace NotationalFerocity
 
             showingFatal = true;
 
-            Logger.Error("Fatal exception ".PadLeft(80, '*'));
+            Logger.Error("Fatal exception:");
 
             try
             {
@@ -57,7 +58,7 @@ namespace NotationalFerocity
             }
             finally
             {
-               Logger.Error("Fatal exception end ".PadLeft(80, '*'));
+               Logger.Error("End fatal exception.");
             }
 
             Shutdown();

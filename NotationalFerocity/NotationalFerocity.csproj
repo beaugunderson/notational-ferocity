@@ -107,10 +107,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="IO\OnCompletionEventArgs.cs" />
+    <Compile Include="Properties\Settings.cs" />
     <Compile Include="Utilities\TimeoutDeferredAction.cs" />
     <Compile Include="Utilities\DeferredAction.cs" />
     <Compile Include="Formatting\OutputType.cs" />
     <Compile Include="Utilities\Paths.cs" />
+    <Compile Include="IO\DiskSearcher.cs" />
     <Compile Include="Windows\OutputWindow.xaml.cs">
       <DependentUpon>OutputWindow.xaml</DependentUpon>
     </Compile>
@@ -204,6 +207,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\BeauGunderson.Extensions\Extensions\Extensions.csproj">
+      <Project>{6DE6BC21-2104-4986-B499-0FF572A1B82F}</Project>
+      <Name>Extensions</Name>
+    </ProjectReference>
     <ProjectReference Include="..\FontDialog\FontDialog.csproj">
       <Project>{BA5113A3-EA25-4BA3-96E1-7FB10D9201F0}</Project>
       <Name>FontDialog</Name>

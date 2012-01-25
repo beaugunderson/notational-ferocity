@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FontDialog", "FontDialog\Fo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Textile", "Textile\Textile.csproj", "{AFC58756-7FB5-47F2-8E54-91828E92AE6A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extensions", "..\BeauGunderson.Extensions\Extensions\Extensions.csproj", "{6DE6BC21-2104-4986-B499-0FF572A1B82F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -64,6 +66,16 @@ Global
 		{AFC58756-7FB5-47F2-8E54-91828E92AE6A}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{AFC58756-7FB5-47F2-8E54-91828E92AE6A}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{AFC58756-7FB5-47F2-8E54-91828E92AE6A}.Release|x86.ActiveCfg = Release|Any CPU
+		{6DE6BC21-2104-4986-B499-0FF572A1B82F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6DE6BC21-2104-4986-B499-0FF572A1B82F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6DE6BC21-2104-4986-B499-0FF572A1B82F}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{6DE6BC21-2104-4986-B499-0FF572A1B82F}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{6DE6BC21-2104-4986-B499-0FF572A1B82F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6DE6BC21-2104-4986-B499-0FF572A1B82F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6DE6BC21-2104-4986-B499-0FF572A1B82F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6DE6BC21-2104-4986-B499-0FF572A1B82F}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{6DE6BC21-2104-4986-B499-0FF572A1B82F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{6DE6BC21-2104-4986-B499-0FF572A1B82F}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

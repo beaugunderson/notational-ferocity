@@ -13,6 +13,8 @@ using System.Windows.Documents;
 using System.Windows.Forms;
 using System.Windows.Threading;
 
+using NotationalFerocity.IO;
+
 using Application = System.Windows.Application;
 using MessageBox = System.Windows.MessageBox;
 using MenuItem = System.Windows.Controls.MenuItem;
@@ -50,6 +52,9 @@ namespace NotationalFerocity.Windows
 
         private bool _isDirty;
 
+        /// <summary>
+        /// Handle window messages for the title bar.
+        /// </summary>
         protected override bool HandleWndProc(IntPtr wParam)
         {
             // Execute the appropriate code for the System Menu item that was clicked
@@ -107,6 +112,38 @@ namespace NotationalFerocity.Windows
             }
         }
 
+        public bool IsEditing
+        {
+            get
+            {
+                // XXX: Where does the access check belong?
+                if (notesListView.CheckAccess())
+                {
+                    return IsEditingInternal();
+                }
+
+                bool isEditing = false;
+
+                notesListView.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() => {
+                    isEditing = IsEditingInternal();
+                }));
+
+                return isEditing;
+            }
+
+            set
+            {
+                // XXX: This is a temporary hack.
+                if (value == false)
+                {
+                    ClearEditing();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Program initialization.
+        /// </summary>
         public MainWindow()
         {
             InitializeComponent();
@@ -119,18 +156,19 @@ namespace NotationalFerocity.Windows
             {
                 Extensions = (StringCollection)Settings.Default["Extensions"];
 
-                if (!Directory.Exists(Settings.Default.NotesDirectory))
+                if (!Directory.Exists(Settings.Default.ExpandedNotesDirectory))
                 {
+                    // TODO: Change default directory
                     var result = MessageBox.Show(
-                        string.Format("The directory you've specified for your notes database doesn't exist. Would you like to create it?\n\n{0}",
-                            Settings.Default.NotesDirectory),
+                        string.Format("The directory you've specified for your notes doesn't exist. Would you like to create it?\n\n{0}",
+                            Settings.Default.ExpandedNotesDirectory),
                         "Notes directory not found",
                         MessageBoxButton.YesNo,
                         MessageBoxImage.Question);
 
                     if (result == MessageBoxResult.Yes)
                     {
-                        Directory.CreateDirectory(Settings.Default.NotesDirectory);
+                        Directory.CreateDirectory(Settings.Default.ExpandedNotesDirectory);
                     }
                     else
                     {
@@ -138,7 +176,7 @@ namespace NotationalFerocity.Windows
                     }
                 }
 
-                NoteWatcher = new FileSystemWatcher(Settings.Default.NotesDirectory);
+                NoteWatcher = new FileSystemWatcher(Settings.Default.ExpandedNotesDirectory);
 
                 NoteWatcher.Renamed += NoteWatcher_Renamed;
    
@@ -182,6 +220,10 @@ namespace NotationalFerocity.Windows
             DataContext = this;
         }
 
+        /// <summary>
+        /// Invoke an action via the dispatcher if needed.
+        /// </summary>
+        /// <param name="action">The action to invoke.</param>
         private void InvokeIfNeeded(Action action)
         {
             if (Dispatcher.Thread != Thread.CurrentThread)
@@ -212,39 +254,17 @@ namespace NotationalFerocity.Windows
         {
             Console.WriteLine("File {1}: {0}", e.Name, e.ChangeType.ToString().ToLower());
 
-            InvokeIfNeeded(RefreshNotes);
-        }
-
-        public bool IsEditing
-        {
-            get
+            if (IsEditing)
             {
-                // XXX: Where does the access check belong?
-                if (notesListView.CheckAccess())
-                {
-                    return _isEditing();
-                }
-
-                bool isEditing = false;
-
-                notesListView.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() => {
-                    isEditing = _isEditing();
-                }));
-
-                return isEditing;
+                _isDirty = true;
             }
-
-            set
+            else
             {
-                // XXX: This is a temporary hack.
-                if (value == false)
-                {
-                    _clearEditing();
-                }
+                InvokeIfNeeded(RefreshNotes);
             }
         }
 
-        private void _clearEditing()
+        private void ClearEditing()
         {
             foreach (var item in notesListView.Items)
             {
@@ -264,7 +284,7 @@ namespace NotationalFerocity.Windows
             return Helpers.FindByName("editBox", listViewItem) as EditBox;
         }
 
-        private bool _isEditing()
+        private bool IsEditingInternal()
         {
             foreach (var item in notesListView.Items)
             {
@@ -305,11 +325,11 @@ namespace NotationalFerocity.Windows
         /// A generator that returns notes from the filesystem.
         /// </summary>
         /// <returns></returns>
-        private IEnumerable<FileSystemInfo> GetNotes()
+        private IEnumerable<FileSystemInfo> GetNotesFromDisk()
         {
             var queue = new Queue<DirectoryInfo>();
 
-            queue.Enqueue(new DirectoryInfo(Settings.Default.NotesDirectory));
+            queue.Enqueue(new DirectoryInfo(Settings.Default.ExpandedNotesDirectory));
 
             while (queue.Count > 0)
             {
@@ -331,16 +351,23 @@ namespace NotationalFerocity.Windows
             }
         }
 
+        /// <summary>
+        /// Refresh the notes from disk.
+        /// </summary>
         private void RefreshNotes()
         {
             Notes.Clear();
 
-            foreach (var note in GetNotes())
+            foreach (var note in GetNotesFromDisk())
             {
                 Notes.Add(new Note(note));
             }
         }
 
+        /// <summary>
+        /// Adds a note, sets it to the current note, and gives focus to the text box.
+        /// </summary>
+        /// <param name="note">The note to add.</param>
         private void AddNote(Note note)
         {
             Notes.Add(note);
@@ -350,6 +377,9 @@ namespace NotationalFerocity.Windows
             noteRichTextBox.Focus();
         }
 
+        /// <summary>
+        /// Sets the RichTextBox's document to that of the current note.
+        /// </summary>
         private void UpdateText()
         {
             LoadingText = true;
@@ -368,6 +398,9 @@ namespace NotationalFerocity.Windows
                 (item as Note).ToString().ToLower().Contains(searchTextBox.Text.ToLower());
         }
 
+        /// <summary>
+        /// Fires when the current note is changed via the ListView
+        /// </summary>
         private void notesListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (e.AddedItems.Count != 1)
@@ -394,14 +427,61 @@ namespace NotationalFerocity.Windows
         /// </summary>
         private void searchTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(searchTextBox.Text))
+            //SearchTitle();
+
+            SearchContent();
+        }
+
+        /// <summary>
+        /// Search based on the note's title
+        /// </summary>
+        private void SearchTitle()
+        {
+            GetView().Filter = string.IsNullOrWhiteSpace(searchTextBox.Text) ?
+                (Predicate<object>)null : 
+                SearchFilter;
+
+            if (notesListView.Items.Count == 1)
             {
-                GetView().Filter = null;
+                CurrentNote = GetView().GetItemAt(0) as Note;
             }
-            else
+        }
+
+        /// <summary>
+        /// Search based on the note's content
+        /// </summary>
+        private void SearchContent()
+        {
+            var searcher = new DiskSearcher(Settings.Default.ExpandedNotesDirectory);
+
+            searcher.OnCompletionEvent += SearchContentCompleted;
+
+            searcher.Search(searchTextBox.Text);
+        }
+
+        /// <summary>
+        /// Fires when the content-based search has completed
+        /// </summary>
+        private void SearchContentCompleted(object sender, OnCompletionEventArgs args)
+        {
+            if (args.Results == null)
             {
-                GetView().Filter = SearchFilter;
+                return;
             }
+
+            GetView().Filter = o =>
+            {
+                var note = o as Note;
+
+                if (note == null)
+                {
+                    return false;
+                }
+
+                return args.Results
+                    .Where((file, i) => file.FullName == note.FileSystemInfo.FullName)
+                    .Count() > 0;
+            };
 
             if (notesListView.Items.Count == 1)
             {
@@ -448,6 +528,9 @@ namespace NotationalFerocity.Windows
             _saveAction.Defer(Settings.Default.SaveDelay);
         }
 
+        /// <summary>
+        /// Show a window containing the current note formatted according to Textile syntax.
+        /// </summary>
         private void Textile_Click(object sender, RoutedEventArgs e)
         {
             var outputWindow = new OutputWindow(CurrentNote, OutputType.Textile);
@@ -455,6 +538,9 @@ namespace NotationalFerocity.Windows
             outputWindow.Show();
         }
 
+        /// <summary>
+        /// Show a window containing the current note formatted according to Markdown syntax.
+        /// </summary>
         private void Markdown_Click(object sender, RoutedEventArgs e)
         {
             var outputWindow = new OutputWindow(CurrentNote, OutputType.Markdown);
@@ -599,6 +685,10 @@ namespace NotationalFerocity.Windows
             noteRichTextBox.ContextMenu.Items.Insert(i, addToDictionaryMenuItem);
         }
 
+        /// <summary>
+        /// Add an entry to the custom dictionary file.
+        /// </summary>
+        /// <param name="entry">The entry to add.</param>
         private static void AddToDictionary(string entry)
         {
             // XXX: Use AppendAllText instead?

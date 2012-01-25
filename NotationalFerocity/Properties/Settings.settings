@@ -9,9 +9,6 @@
   &lt;string&gt;.sql&lt;/string&gt;
 &lt;/ArrayOfString&gt;</Value>
     </Setting>
-    <Setting Name="NotesDirectory" Type="System.String" Scope="User">
-      <Value Profile="(Default)">C:\Notes</Value>
-    </Setting>
     <Setting Name="ColorBackground" Description="The background color." Type="System.Windows.Media.SolidColorBrush" Scope="User">
       <Value Profile="(Default)">#FFFFFFFF</Value>
     </Setting>
@@ -32,6 +29,9 @@
     </Setting>
     <Setting Name="SaveDelay" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">1500</Value>
+    </Setting>
+    <Setting Name="NotesDirectory" Type="System.String" Scope="User">
+      <Value Profile="(Default)">%USERPROFILE%\Documents\Notes</Value>
     </Setting>
   </Settings>
 </SettingsFile>

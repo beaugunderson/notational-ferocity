@@ -76,7 +76,7 @@
 
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <l:EditBox x:Name="editBox" Height="20" Value="{Binding Path=FileNameWithoutExtension, Mode=TwoWay}" Focusable="False" />
+                    <l:EditBox x:Name="editBox" Height="20" Value="{Binding Path=FileNameWithoutExtension, Mode=TwoWay, UpdateSourceTrigger=Explicit}" Focusable="False" />
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
