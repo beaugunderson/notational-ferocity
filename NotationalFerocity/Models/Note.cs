@@ -83,6 +83,7 @@ namespace NotationalFerocity.Models
             // Lazy-load the contents of the file
             get
             {
+                // XXX: Add exception-handling here (out of memory on large files)
                 return _text ?? (_text = File.ReadAllText(FileSystemInfo.FullName));
             }
 

@@ -207,7 +207,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\BeauGunderson.Extensions\Extensions\Extensions.csproj">
+    <ProjectReference Include="..\BeauGunderson.Extensions\Extensions\Extensions.csproj">
       <Project>{6DE6BC21-2104-4986-B499-0FF572A1B82F}</Project>
       <Name>Extensions</Name>
     </ProjectReference>

@@ -1,0 +1,5 @@
+[submodule "BeauGunderson.Extensions"]
+
+path = BeauGunderson.Extensions
+
+url = https://github.com/beaugunderson/BeauGunderson.Extensions.git
