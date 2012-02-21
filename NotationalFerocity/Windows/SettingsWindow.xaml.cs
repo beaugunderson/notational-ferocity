@@ -51,9 +51,9 @@ namespace NotationalFerocity.Windows
 
             set
             {
-                _notesDirectory = value;
+                _notesDirectory = Environment.ExpandEnvironmentVariables(value);
                 
-                if (!Directory.Exists(value))
+                if (!Directory.Exists(_notesDirectory))
                 {
                     throw new ApplicationException("The directory does not exist.");
                 }

@@ -19,39 +19,6 @@
     <Window.Resources>
         <Style TargetType="{x:Type TextBox}"
                BasedOn="{StaticResource {x:Type TextBox}}">
-            <!--
-            <Style.Triggers>
-                <Trigger Property="IsFocused" Value="true">
-                    <Setter Property="BorderBrush" Value="Blue" />
-                    <Setter Property="BorderThickness" Value="2" />
-                </Trigger>
-            </Style.Triggers>
-            -->
-
-            <!--
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type TextBox}">
-                        <Border Name="Border"
-                            CornerRadius="2"
-                            Padding="0"
-                            BorderThickness="1">
-                            
-                            <Border.Background>
-                                <SolidColorBrush Color="White" />
-                            </Border.Background>
-
-                            <Border.BorderBrush>
-                                <SolidColorBrush Color="Black" />
-                            </Border.BorderBrush>
-
-                            <ScrollViewer Margin="0" x:Name="PART_ContentHost" />
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            -->
-
             <Setter Property="Validation.ErrorTemplate">
                 <Setter.Value>
                     <ControlTemplate>
@@ -76,16 +43,16 @@
             <ColumnDefinition Width="287*" />
         </Grid.ColumnDefinitions>
 
-        <WPF:ClickLabel Target="{Binding ElementName=notesDirectoryTextBox}" Content="Notes Directory" Height="28" HorizontalAlignment="Left" Margin="12,12,0,0" x:Name="notesDirectoryLabel" VerticalAlignment="Top" />
-        <WPF:ClickLabel Target="{Binding ElementName=extensionsTextBox}" Content="Extensions" Height="28" HorizontalAlignment="Left" Margin="12,46,0,0" x:Name="extensionsLabel" VerticalAlignment="Top" Width="93" />
-        <WPF:ClickLabel Target="{Binding ElementName=backgroundColorPicker}" Content="Background Color" Height="28" HorizontalAlignment="Left" Margin="12,80,0,0" x:Name="label1" VerticalAlignment="Top" Width="114" />
-        <WPF:ClickLabel Target="{Binding ElementName=foregroundColorPicker}" Content="Foreground Color" Height="28" HorizontalAlignment="Left" Margin="12,114,0,0" x:Name="label2" VerticalAlignment="Top" Width="114" />
-        <WPF:ClickLabel Target="{Binding ElementName=proportionalFontTextBox}" Content="Proportional Font" Height="28" HorizontalAlignment="Left" Margin="12,148,0,0" x:Name="label3" VerticalAlignment="Top" Width="108" />
-        <WPF:ClickLabel Target="{Binding ElementName=monospacedFontTextBox}" Content="Monospaced Font" Height="28" HorizontalAlignment="Left" Margin="12,182,0,0" x:Name="label4" VerticalAlignment="Top" Width="108" />
-        <WPF:ClickLabel Target="{Binding ElementName=markdownFontTextBox}" Content="Markdown Font" Height="28" HorizontalAlignment="Left" Margin="12,216,0,0" x:Name="markdownFontLabel" VerticalAlignment="Top" Width="108" />
-        <WPF:ClickLabel Target="{Binding ElementName=displayFontTextBox}" Content="Display Font" Height="28" HorizontalAlignment="Left" Margin="12,250,0,0" x:Name="displayFontLabel" VerticalAlignment="Top" Width="108" />
+        <WPF:ClickLabel Grid.Column="0" Target="{Binding ElementName=notesDirectoryTextBox}" Content="Notes Directory" Height="28" HorizontalAlignment="Left" Margin="12,12,0,0" x:Name="notesDirectoryLabel" VerticalAlignment="Top" Width="108" />
+        <WPF:ClickLabel Grid.Column="0" Target="{Binding ElementName=extensionsTextBox}" Content="Extensions" Height="28" HorizontalAlignment="Left" Margin="12,46,0,0" x:Name="extensionsLabel" VerticalAlignment="Top" Width="108" />
+        <WPF:ClickLabel Grid.Column="0" Target="{Binding ElementName=backgroundColorPicker}" Content="Background Color" Height="28" HorizontalAlignment="Left" Margin="12,80,0,0" x:Name="backgroundColorLabel" VerticalAlignment="Top" Width="108" />
+        <WPF:ClickLabel Grid.Column="0" Target="{Binding ElementName=foregroundColorPicker}" Content="Foreground Color" Height="28" HorizontalAlignment="Left" Margin="12,114,0,0" x:Name="foregroundColorLabel" VerticalAlignment="Top" Width="108" />
+        <WPF:ClickLabel Grid.Column="0" Target="{Binding ElementName=proportionalFontTextBox}" Content="Proportional Font" Height="28" HorizontalAlignment="Left" Margin="12,148,0,0" x:Name="proportionalFontLabel" VerticalAlignment="Top" Width="108" />
+        <WPF:ClickLabel Grid.Column="0" Target="{Binding ElementName=monospacedFontTextBox}" Content="Monospaced Font" Height="28" HorizontalAlignment="Left" Margin="12,182,0,0" x:Name="monospacedFontLabel" VerticalAlignment="Top" Width="108" />
+        <WPF:ClickLabel Grid.Column="0" Target="{Binding ElementName=markdownFontTextBox}" Content="Markdown Font" Height="28" HorizontalAlignment="Left" Margin="12,216,0,0" x:Name="markdownFontLabel" VerticalAlignment="Top" Width="108" />
+        <WPF:ClickLabel Grid.Column="0" Target="{Binding ElementName=displayFontTextBox}" Content="Display Font" Height="28" HorizontalAlignment="Left" Margin="12,250,0,0" x:Name="displayFontLabel" VerticalAlignment="Top" Width="108" />
 
-        <TextBox Height="23" Margin="0,14,80,0" Name="notesDirectoryTextBox" VerticalAlignment="Top" Grid.Column="1">
+        <TextBox Height="23" Margin="0,14,80,0" Name="notesDirectoryTextBox" VerticalAlignment="Top" Grid.Column="1" AcceptsTab="False">
             <TextBox.Text>
                 <Binding Path="NotesDirectory" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True">
                     <Binding.ValidationRules>
@@ -112,10 +79,13 @@
 
         <TextBox Grid.Column="1" Height="23" Margin="0,150,41,0" Name="proportionalFontTextBox" VerticalAlignment="Top" />
         <Button Content="..." Height="23" HorizontalAlignment="Right" Margin="0,150,12,0" Name="proportionalFontButton" VerticalAlignment="Top" Width="23" Grid.Column="1" Click="proportionalFontButton_Click" />
+
         <TextBox Height="23" Margin="0,184,41,0" Name="monospacedFontTextBox" VerticalAlignment="Top" Grid.Column="1" />
         <Button Content="..." Height="23" HorizontalAlignment="Right" Margin="0,184,12,0" Name="monospaceFontButton" VerticalAlignment="Top" Width="23" Grid.Column="1" Click="monospaceFontButton_Click" />
+
         <TextBox Height="23" Margin="0,218,41,0" Name="markdownFontTextBox" VerticalAlignment="Top" Grid.Column="1" />
         <Button Content="..." Height="23" HorizontalAlignment="Right" Margin="0,218,12,0" Name="markdownFontButton" VerticalAlignment="Top" Width="23" Grid.Column="1" Click="markdownFontButton_Click" />
+
         <TextBox Height="23" Margin="0,252,41,0" Name="displayFontTextBox" VerticalAlignment="Top" Grid.Column="1" />
         <Button Content="..." Height="23" HorizontalAlignment="Right" Margin="0,252,12,0" Name="displayFontButton" VerticalAlignment="Top" Width="23" Grid.Column="1" Click="displayFontButton_Click" />
 
@@ -123,9 +93,9 @@
 
         <Button Content="_OK" Grid.Column="1" HorizontalAlignment="Right" Margin="0,0,12,12" Name="okButton" Width="75" Height="23" VerticalAlignment="Bottom" IsDefault="True" Click="okButton_Click">
             <Button.Style>
-                <Style TargetType="{x:Type Button}"
-                       BasedOn="{StaticResource {x:Type Button}}">
+                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
                     <Setter Property="IsEnabled" Value="false" />
+
                     <Style.Triggers>
                         <!-- Require the controls to be valid in order to press OK -->
                         <MultiDataTrigger>
@@ -133,6 +103,7 @@
                                 <Condition Binding="{Binding ElementName=notesDirectoryTextBox, Path=(Validation.HasError)}" Value="false" />
                                 <Condition Binding="{Binding ElementName=extensionsTextBox, Path=(Validation.HasError)}" Value="false" />
                             </MultiDataTrigger.Conditions>
+
                             <Setter Property="IsEnabled" Value="true" />
                         </MultiDataTrigger>
                     </Style.Triggers>

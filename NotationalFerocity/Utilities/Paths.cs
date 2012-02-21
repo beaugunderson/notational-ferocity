@@ -14,7 +14,7 @@ namespace NotationalFerocity.Utilities
 
         public static string CombineNotesDirectory(string path)
         {
-            return Path.Combine(Settings.Default.NotesDirectory, HttpUtility.UrlPathEncode(path));
+            return Path.Combine(Settings.Default.ExpandedNotesDirectory, HttpUtility.UrlPathEncode(path));
         }
     }
 }
