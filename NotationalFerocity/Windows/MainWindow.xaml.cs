@@ -373,6 +373,7 @@ namespace NotationalFerocity.Windows
             Notes.Add(note);
 
             CurrentNote = note;
+            CurrentNote.Save();
 
             noteRichTextBox.Focus();
         }
@@ -427,9 +428,10 @@ namespace NotationalFerocity.Windows
         /// </summary>
         private void searchTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            //SearchTitle();
+            SearchTitle();
 
-            SearchContent();
+            // XXX: Too slow currently
+            //SearchContent();
         }
 
         /// <summary>
